@@ -1,0 +1,622 @@
+@import "tailwindcss";
+
+:root {
+  --notion-bg: #ffffff;
+  --notion-sidebar: #f7f7f5;
+  --notion-sidebar-hover: #efefef;
+  --notion-divider: #e3e2e0;
+  --notion-text: #37352f;
+  --notion-muted: #6b6b6b;
+  --notion-light: #9ca3af;
+  --saffron: #c58a43;
+  --saffron-mid: #85530f;
+  --paper: #f2efe8;
+  --surface: #fcf9f2;
+  --cinnabar: #963530;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--notion-bg);
+  color: var(--notion-text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--notion-divider);
+  background: color-mix(in srgb, var(--notion-bg) 94%, transparent);
+  padding: 0 40px;
+  backdrop-filter: blur(12px);
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  height: 28px;
+  width: auto;
+}
+
+.main-nav,
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  color: var(--notion-muted);
+  font-size: 14px;
+}
+
+.main-nav a,
+.footer-links a,
+.section-heading.split a {
+  border-radius: 4px;
+  padding: 6px 4px;
+}
+
+.main-nav a:hover,
+.footer-links a:hover,
+.section-heading.split a:hover {
+  color: var(--notion-text);
+}
+
+main {
+  overflow: hidden;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(520px, 1.14fr);
+  gap: 48px;
+  min-height: calc(100vh - 64px);
+  align-items: center;
+  padding: 64px 40px 52px;
+}
+
+.hero-copy {
+  max-width: 610px;
+}
+
+.eyebrow {
+  display: inline-block;
+  color: var(--saffron-mid);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.hero-copy h1,
+.page-hero h1 {
+  margin-bottom: 14px;
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(46px, 7vw, 88px);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.hero-line {
+  margin-bottom: 14px;
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 650;
+  line-height: 1.22;
+}
+
+.hero-support,
+.page-hero p {
+  max-width: 680px;
+  color: var(--notion-muted);
+  font-size: 17px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid var(--notion-divider);
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.button.primary {
+  border-color: var(--saffron);
+  background: var(--saffron);
+  color: white;
+}
+
+.button.primary:hover {
+  border-color: var(--saffron-mid);
+  background: var(--saffron-mid);
+}
+
+.button.secondary {
+  background: var(--notion-sidebar);
+  color: var(--notion-text);
+}
+
+.button.secondary:hover {
+  background: var(--notion-sidebar-hover);
+}
+
+.note {
+  margin-top: 16px;
+  color: var(--notion-muted);
+  font-size: 13px;
+}
+
+.product-preview {
+  overflow: hidden;
+  border: 1px solid var(--notion-divider);
+  border-radius: 6px;
+  background: var(--notion-sidebar);
+}
+
+.preview-topbar {
+  display: flex;
+  height: 38px;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--notion-divider);
+  background: var(--notion-bg);
+  color: var(--notion-muted);
+  font-size: 12px;
+  padding: 0 14px;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--notion-divider);
+}
+
+.preview-body {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  min-height: 470px;
+}
+
+.preview-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1px solid var(--notion-divider);
+  padding: 18px 14px;
+}
+
+.side-title {
+  color: var(--notion-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.side-item {
+  border-radius: 4px;
+  color: var(--notion-muted);
+  font-size: 12px;
+  padding: 7px 8px;
+}
+
+.side-item.active {
+  background: #ebebea;
+  color: var(--notion-text);
+}
+
+.preview-stage {
+  display: grid;
+  grid-template-rows: 42% 1fr;
+  background: var(--notion-bg);
+}
+
+.waveform {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--notion-divider);
+  padding: 24px 28px;
+}
+
+.waveform span {
+  width: 4px;
+  min-height: 18px;
+  border-radius: 4px;
+  background: #c4c4c8;
+}
+
+.waveform i {
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 46%;
+  width: 2px;
+  background: var(--saffron);
+}
+
+.segment-list {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 18px;
+}
+
+.segment {
+  border: 1px solid var(--notion-divider);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+
+.segment.selected {
+  border-color: color-mix(in srgb, var(--saffron) 38%, var(--notion-divider));
+  background: color-mix(in srgb, var(--saffron) 10%, white);
+}
+
+.segment time {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--notion-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.segment p {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+.band {
+  border-top: 1px solid var(--notion-divider);
+  border-bottom: 1px solid var(--notion-divider);
+  background: var(--notion-sidebar);
+}
+
+.intro-band {
+  padding: 34px 40px;
+  text-align: center;
+}
+
+.intro-band p {
+  margin: 0 auto;
+  max-width: 760px;
+  font-size: 18px;
+}
+
+.section-block {
+  padding: 72px 40px;
+}
+
+.section-block.muted {
+  border-top: 1px solid var(--notion-divider);
+  border-bottom: 1px solid var(--notion-divider);
+  background: var(--notion-sidebar);
+}
+
+.section-heading {
+  max-width: 900px;
+  margin-bottom: 28px;
+}
+
+.section-heading h2 {
+  margin-bottom: 0;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.16;
+}
+
+.section-heading.split {
+  display: flex;
+  max-width: none;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.section-heading.split a {
+  color: var(--saffron-mid);
+  font-weight: 650;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.feature-grid.wide {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.feature-card,
+.download-card,
+.info-panel,
+.info-grid article {
+  border: 1px solid var(--notion-divider);
+  border-radius: 6px;
+  background: var(--notion-bg);
+  padding: 22px;
+}
+
+.feature-card h3,
+.download-card h3,
+.info-panel h2,
+.info-grid h2 {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.feature-card p,
+.download-card p,
+.download-card small,
+.info-panel p,
+.info-grid p,
+.step p,
+.guide-row p {
+  color: var(--notion-muted);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--notion-divider);
+  background: var(--notion-divider);
+}
+
+.step {
+  background: var(--notion-bg);
+  padding: 22px;
+}
+
+.step span,
+.guide-row > span {
+  display: block;
+  margin-bottom: 22px;
+  color: var(--saffron-mid);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.step h3 {
+  margin-bottom: 8px;
+  font-size: 17px;
+}
+
+.download-grid,
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.download-card {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 12px;
+}
+
+.download-card h3,
+.download-card p {
+  margin-bottom: 0;
+}
+
+.download-card small {
+  display: block;
+  font-size: 12px;
+}
+
+.page-hero {
+  border-bottom: 1px solid var(--notion-divider);
+  padding: 82px 40px 58px;
+}
+
+.page-hero h1 {
+  max-width: 900px;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(38px, 6vw, 70px);
+}
+
+.guide-list,
+.release-list {
+  display: grid;
+  gap: 14px;
+}
+
+.guide-row {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  border: 1px solid var(--notion-divider);
+  border-radius: 6px;
+  background: var(--notion-bg);
+  padding: 24px;
+}
+
+.guide-row h2 {
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+.release-card {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 24px;
+  border: 1px solid var(--notion-divider);
+  border-radius: 6px;
+  padding: 22px;
+}
+
+.release-card strong,
+.release-card span {
+  display: block;
+}
+
+.release-card span {
+  color: var(--notion-muted);
+  font-size: 13px;
+}
+
+.release-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.release-card li + li {
+  margin-top: 8px;
+}
+
+.site-footer {
+  display: grid;
+  grid-template-columns: 1.2fr auto;
+  gap: 18px;
+  border-top: 1px solid var(--notion-divider);
+  background: var(--notion-sidebar);
+  padding: 30px 40px;
+  color: var(--notion-muted);
+  font-size: 13px;
+}
+
+.site-footer strong,
+.site-footer span {
+  display: block;
+}
+
+.site-footer strong {
+  color: var(--notion-text);
+}
+
+.site-footer p {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+@media (max-width: 980px) {
+  .site-header {
+    align-items: start;
+    flex-direction: column;
+    padding: 16px 22px;
+  }
+
+  .main-nav {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+  }
+
+  .hero-section {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 48px 22px 40px;
+  }
+
+  .preview-body {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-sidebar {
+    display: none;
+  }
+
+  .section-block,
+  .page-hero,
+  .intro-band,
+  .site-footer {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .feature-grid,
+  .feature-grid.wide,
+  .steps,
+  .download-grid,
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading.split,
+  .site-footer {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .release-card,
+  .guide-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-mark {
+    height: 24px;
+  }
+
+  .hero-actions,
+  .download-card .button {
+    width: 100%;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .preview-body {
+    min-height: 360px;
+  }
+
+  .waveform {
+    gap: 4px;
+    padding-inline: 18px;
+  }
+
+  .waveform span {
+    width: 3px;
+  }
+}
