@@ -63,7 +63,6 @@ function Header({ onNavigate }: { onNavigate: (path: string) => void }) {
   return (
     <header className="site-header">
       <button className="brand-link" onClick={() => onNavigate("/")} type="button">
-        <img src="/rushi-lockup.png" alt="" className="brand-mark" />
         <span>如是我闻</span>
       </button>
       <nav className="main-nav" aria-label="主导航">

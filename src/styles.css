@@ -73,11 +73,6 @@ a {
   white-space: nowrap;
 }
 
-.brand-mark {
-  height: 28px;
-  width: auto;
-}
-
 .main-nav,
 .footer-links {
   display: flex;
@@ -608,10 +603,6 @@ p {
 }
 
 @media (max-width: 520px) {
-  .brand-mark {
-    height: 24px;
-  }
-
   .hero-actions,
   .download-card .button,
   .button {
