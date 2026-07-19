@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Rushi 会上传我的录音吗？",
+    "answer": "默认本机转写不会为云转写上传音频。若你主动配置在线 STT Provider，则按所选厂商能力工作。"
+  },
+  {
+    "question": "支持哪些平台？",
+    "answer": "当前提供 macOS 和 Windows 桌面包；暂无 Linux 桌面包。"
+  },
+  {
+    "question": "Windows 为什么推荐离线安装包？",
+    "answer": "离线安装包 zip 包含安装入口和必要的本机模型资源。请完整解压后运行同级安装包。"
+  }
+]

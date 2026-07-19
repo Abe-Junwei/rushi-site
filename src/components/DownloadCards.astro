@@ -1,0 +1,15 @@
+---
+import { downloads } from "../data";
+---
+
+<div class="download-grid">
+  {downloads.map((item) => (
+    <article class="download-card">
+      <span class="eyebrow">{item.platform}</span>
+      <h3>{item.title}</h3>
+      <p>{item.meta}</p>
+      <a class="button primary" href={item.href}>下载 {item.platform}</a>
+      <small>{item.note}</small>
+    </article>
+  ))}
+</div>

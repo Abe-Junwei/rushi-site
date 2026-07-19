@@ -1,0 +1,17 @@
+[
+  {
+    "id": "lecture-notes",
+    "title": "中文课录音整理",
+    "description": "把长录音转成可校对语段，再导出讲稿或学习笔记。"
+  },
+  {
+    "id": "subtitle-draft",
+    "title": "字幕初稿",
+    "description": "保留时间轴，校对后导出 SRT。"
+  },
+  {
+    "id": "interview-review",
+    "title": "访谈校对",
+    "description": "在波形和语段之间来回定位，快速修正识别错误。"
+  }
+]

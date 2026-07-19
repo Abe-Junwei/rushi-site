@@ -1,0 +1,50 @@
+[
+  {
+    "id": "local-transcribe",
+    "name": "本机转写",
+    "status": "released",
+    "shortDescription": "内置 FunASR 本机模型，首启准备后可断网转写；在线 STT 作为可选 Provider 使用。",
+    "docsPath": "/docs/getting-started",
+    "releaseDate": "2026-06-18"
+  },
+  {
+    "id": "waveform-review",
+    "name": "波形校对",
+    "status": "released",
+    "shortDescription": "Editor 将波形、播放头和语段列表放在同一工作区，支持拆分、合并、冻结与精修。",
+    "docsPath": "/docs/features/waveform-review",
+    "releaseDate": "2026-06-18"
+  },
+  {
+    "id": "project-hub",
+    "name": "项目管理",
+    "status": "released",
+    "shortDescription": "Welcome 创建项目，Project Hub 管理文件与场次元信息，Editor 专注单条音频校对。",
+    "docsPath": "/docs/features/project-hub",
+    "releaseDate": "2026-06-18"
+  },
+  {
+    "id": "delivery-export",
+    "name": "交付导出",
+    "status": "released",
+    "shortDescription": "导出 TXT、SRT、DOCX，场次元信息可进入文档，适合课录音整理与交付。",
+    "docsPath": "/docs/features/export",
+    "releaseDate": "2026-06-18"
+  },
+  {
+    "id": "windows-gpu",
+    "name": "可选 GPU",
+    "status": "released",
+    "shortDescription": "Windows 用户有 NVIDIA 显卡时，可在应用环境页下载 CUDA 侧车；失败也可继续 CPU 转写。",
+    "docsPath": "/docs/features/local-asr",
+    "releaseDate": "2026-07-19"
+  },
+  {
+    "id": "in-app-update",
+    "name": "应用内更新",
+    "status": "released",
+    "shortDescription": "macOS 与 Windows 安装版通过 updates.rushi.app 获取更新清单，确认后下载、验签并安装。",
+    "docsPath": "/docs/features/updates",
+    "releaseDate": "2026-07-18"
+  }
+]

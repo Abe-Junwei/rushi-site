@@ -20,9 +20,24 @@ custom domain to `rushi.app`.
 
 ## Edit content
 
-- `src/content.ts`: version, download links, feature copy, guide steps, changelog
-- `src/main.tsx`: page structure and navigation
-- `src/styles.css`: visual system and responsive layout
+- `product/features.json`: product capability source of truth
+- `product/use-cases.json`: homepage use-case cards
+- `product/faq.json`: FAQ source for future pages
+- `changes/*.md`: release notes and product update entries
+- `docs/**/*.md`: documentation pages
+- `src/data.ts`: download links and shared page data
+- `src/pages/**/*.astro`: page templates
+- `src/styles/site.css`: visual system and responsive layout
+
+The intended workflow is:
+
+```text
+product facts / changes / docs
+  -> Astro pages
+  -> GitHub Actions
+  -> GitHub Pages
+  -> rushi.app
+```
 
 ## GitHub Pages
 

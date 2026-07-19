@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const changeModules = import.meta.glob("../../changes/*.md", { eager: true });
+const changes = Object.values(changeModules) as Array<{
+  frontmatter: Record<string, string>;
+  compiledContent: () => string;
+}>;
+const sorted = changes.sort((a, b) =>
+  String(b.frontmatter.date).localeCompare(String(a.frontmatter.date)),
+);
+---
+
+<BaseLayout title="更新记录 - 如是我闻 Rushi">
+  <section class="page-hero">
+    <span class="eyebrow">更新记录</span>
+    <h1>发行进展与可下载版本</h1>
+    <p>这里记录面向用户的主要变化。每条记录来自 `changes/*.md`，方便未来自动化生成文案 PR。</p>
+  </section>
+  <section class="section-block">
+    <div class="release-list">
+      {sorted.map((change) => (
+        <article class="release-card">
+          <div>
+            <strong>{change.frontmatter.title}</strong>
+            <span>{change.frontmatter.date}</span>
+          </div>
+          <div set:html={change.compiledContent()} />
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

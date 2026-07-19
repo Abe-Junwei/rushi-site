@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const pageModules = import.meta.glob("../../../docs/**/*.md", { eager: true });
+  return Object.entries(pageModules).map(([path, page]) => {
+    const file = path.split("../../../docs/")[1].replace(/\.md$/, "");
+    return {
+      params: { slug: file.replace(/\\/g, "/") },
+      props: { page },
+    };
+  });
+}
+
+const { page } = Astro.props as {
+  page: {
+    frontmatter: {
+      title: string;
+      description?: string;
+    };
+    compiledContent: () => string;
+  };
+};
+---
+
+<BaseLayout title={`${page.frontmatter.title} - 如是我闻 Rushi`} description={page.frontmatter.description}>
+  <section class="doc-page">
+    <article class="doc-content">
+      <div set:html={page.compiledContent()} />
+    </article>
+  </section>
+</BaseLayout>

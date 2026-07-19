@@ -1,0 +1,49 @@
+---
+import "../styles/site.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "如是我闻 Rushi - 本地中文课录音转写与校对",
+  description = "如是我闻 Rushi 是面向中文课录音的本地转写与校对桌面应用，支持波形语段校对、TXT/SRT/DOCX 导出与 macOS、Windows 下载。",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand-link" href="/">如是我闻</a>
+      <nav class="main-nav" aria-label="主导航">
+        <a href="/features">功能</a>
+        <a href="/docs/getting-started">使用说明</a>
+        <a href="/changelog">更新记录</a>
+        <a href="/download">下载</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div>
+        <strong>如是我闻 Rushi</strong>
+        <span>本地中文课录音转写与校对桌面应用</span>
+      </div>
+      <div class="footer-links">
+        <a href="/download">下载</a>
+        <a href="/docs/getting-started">使用说明</a>
+        <a href="https://updates.rushi.app/latest.json">更新清单</a>
+      </div>
+      <p>Copyright © 沂南灵创技术服务中心。当前无 Linux 桌面包。</p>
+    </footer>
+  </body>
+</html>

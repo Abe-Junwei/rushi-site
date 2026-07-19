@@ -1,0 +1,89 @@
+---
+import DownloadCards from "../components/DownloadCards.astro";
+import ProductPreview from "../components/ProductPreview.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { guideSteps, productFeatures, productUseCases, version } from "../data";
+
+const featured = productFeatures.slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="hero-section">
+    <div class="hero-copy">
+      <span class="eyebrow">Rushi v{version}</span>
+      <h1>如是我闻</h1>
+      <p class="hero-line">本地中文课录音，转写与校对。</p>
+      <p class="hero-support">
+        波形对齐语段，本机完成转写；整理后导出 TXT、SRT、DOCX。
+        面向讲课、访谈、学习笔记和字幕初稿，不把桌面工作流做成云端账号墙。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/download">获取应用</a>
+        <a class="button secondary" href="/features">查看功能</a>
+      </div>
+      <p class="note">发版于 updates.rushi.app · 当前无 Linux 桌面包</p>
+    </div>
+    <ProductPreview />
+  </section>
+
+  <section class="band intro-band">
+    <p>录音与转写默认在你的电脑上完成。需要在线 STT 时，你也可以按 Provider 单独配置凭证。</p>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <span class="eyebrow">Features</span>
+      <h2>从导入到交付，一条本地工作流</h2>
+    </div>
+    <div class="feature-grid">
+      {featured.map((feature) => (
+        <article class="feature-card">
+          <h3>{feature.name}</h3>
+          <p>{feature.shortDescription}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block muted">
+    <div class="section-heading">
+      <span class="eyebrow">Use cases</span>
+      <h2>适合这些整理场景</h2>
+    </div>
+    <div class="feature-grid">
+      {productUseCases.map((item) => (
+        <article class="feature-card">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <span class="eyebrow">How it works</span>
+      <h2>四步完成一份可校对的转写稿</h2>
+    </div>
+    <div class="steps">
+      {guideSteps.map((item) => (
+        <article class="step">
+          <span>{item.step}</span>
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block muted">
+    <div class="section-heading split">
+      <div>
+        <span class="eyebrow">Download</span>
+        <h2>选择你的桌面平台</h2>
+      </div>
+      <a href="/download">下载说明</a>
+    </div>
+    <DownloadCards />
+  </section>
+</BaseLayout>
