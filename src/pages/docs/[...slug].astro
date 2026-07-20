@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { wrapDocSections } from "../../lib/wrapDocSections";
 
 export async function getStaticPaths() {
   const pageModules = import.meta.glob("../../../docs/**/*.md", { eager: true });
@@ -17,16 +18,21 @@ const { page } = Astro.props as {
     frontmatter: {
       title: string;
       description?: string;
+      foldSections?: boolean;
     };
-    compiledContent: () => string;
+    compiledContent: () => string | Promise<string>;
   };
 };
+
+const rawHtml = await page.compiledContent();
+const foldSections = page.frontmatter.foldSections !== false;
+const html = foldSections ? wrapDocSections(rawHtml) : rawHtml;
 ---
 
 <BaseLayout title={`${page.frontmatter.title} - 如是我闻 Rushi`} description={page.frontmatter.description}>
   <section class="doc-page">
     <article class="doc-content">
-      <div set:html={page.compiledContent()} />
+      <div class="doc-body" set:html={html} />
     </article>
   </section>
 </BaseLayout>
