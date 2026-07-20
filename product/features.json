@@ -59,7 +59,7 @@
     "id": "in-app-update",
     "name": "应用内更新",
     "status": "released",
-    "shortDescription": "macOS 与 Windows 安装版通过 updates.rushi.app 获取更新清单，确认后下载、验签并安装。",
+    "shortDescription": "macOS 与 Windows 安装版支持应用内检查更新；确认后下载、验签并安装。",
     "docsPath": "/docs/getting-started",
     "releaseDate": "2026-07-20"
   }

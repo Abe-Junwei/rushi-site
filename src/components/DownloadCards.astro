@@ -21,7 +21,6 @@ const { items = downloads } = Astro.props;
         <a class="button primary download-panel-action" href={item.href}>
           {item.actionLabel}
         </a>
-        <a class="download-checksum" href={item.checksum}>SHA256 校验文件</a>
         <small>{item.note}</small>
       </article>
     ))

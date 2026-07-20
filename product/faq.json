@@ -5,7 +5,7 @@
   },
   {
     "question": "当前公开版本是多少？",
-    "answer": "以 updates.rushi.app/latest.json 为准；当前为 v1.0.0。安装包托管在 CDN，不再依赖 GitHub Release 挂载。"
+    "answer": "当前公开版本为 v1.0.0，安装包见官网下载页。"
   },
   {
     "question": "支持哪些平台？",

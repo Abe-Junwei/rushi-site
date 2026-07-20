@@ -152,7 +152,7 @@ Motion intent (for annotation only): soft fade/rise of hero copy; gentle playhea
 
 ### 3.8 Footer
 
-品牌一行 + 下载 / 使用说明 / 更新清单链接 + Copyright（沂南灵创技术服务中心）
+品牌一行 + 下载 / 使用说明 / 更新记录链接 + Copyright（沂南灵创技术服务中心）
 
 ---
 

@@ -4,7 +4,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import {
   cudaSidecar,
   downloads,
-  updateManifestUrl,
   version,
   windowsInstaller,
 } from "../data";
@@ -15,8 +14,7 @@ import {
     <span class="eyebrow">下载 · v{version}</span>
     <h1>下载如是我闻桌面版</h1>
     <p>
-      当前正式包为 v{version}，托管于 updates.rushi.app。Windows 推荐下载离线安装包 zip；macOS 提供 Apple Silicon DMG。
-      每个安装包旁附有 SHA256 校验文件，便于核对完整性。
+      当前正式包为 v{version}，由官方 CDN 分发。Windows 推荐下载离线安装包 zip；macOS 提供 Apple Silicon DMG。
     </p>
   </section>
 
@@ -31,7 +29,7 @@ import {
   <section class="section-block muted">
     <div class="section-heading">
       <h2>其他资产</h2>
-      <p class="section-lead">安装包 EXE、更新清单与可选 GPU 侧车。</p>
+      <p class="section-lead">安装包 EXE、应用内更新说明与可选 GPU 侧车。</p>
     </div>
     <div class="info-grid download-extra">
       <article>
@@ -40,24 +38,32 @@ import {
         <p>{windowsInstaller.note}</p>
         <div class="download-extra-actions">
           <a class="button primary" href={windowsInstaller.href}>{windowsInstaller.actionLabel}</a>
-          <a class="download-checksum" href={windowsInstaller.checksum}>SHA256 校验文件</a>
         </div>
       </article>
       <article>
-        <h2>应用内更新清单</h2>
-        <p>安装版会读取官方 OTA 清单，确认后下载、验签并安装。手动检查入口在设置的关于页。</p>
-        <div class="download-extra-actions">
-          <a class="button secondary" href={updateManifestUrl}>打开 latest.json</a>
-        </div>
+        <h2>应用内更新</h2>
+        <p>
+          安装版启动时会自动检查官方更新；确认后下载、验签并安装。也可在应用内打开「设置 → 关于 → 检查更新」。
+          更新失败时，请改从本页重新下载安装包。
+        </p>
       </article>
       <article>
         <h2>{cudaSidecar.title}</h2>
         <p>{cudaSidecar.note}</p>
-        <div class="download-extra-actions">
-          <a class="button secondary" href={cudaSidecar.href}>CUDA 侧车地址</a>
-        </div>
-        <small>文件就绪前访问可能 404；以应用环境页或 CDN 实际状态为准。</small>
+        <p class="download-verify-note">
+          请在应用「设置 → 环境」按提示获取；本站不直接提供侧车下载链接，以免指向尚未就绪的文件。
+        </p>
       </article>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>完整性校验（可选）</h2>
+      <p class="section-lead">
+        需要核对安装包是否完整时，可在命令行对照 SHA256。CDN 上每个安装包旁有同名的
+        <code>.sha256</code> 摘要文件；请用本地工具读取，无需在浏览器中打开。
+      </p>
     </div>
   </section>
 </BaseLayout>

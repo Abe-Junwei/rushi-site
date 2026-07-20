@@ -816,21 +816,7 @@ main {
 
 .download-panel-action {
   width: 100%;
-  margin-bottom: 10px;
-}
-
-.download-checksum {
-  display: inline-block;
   margin-bottom: 14px;
-  color: var(--saffron-deep);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.download-checksum:hover {
-  color: var(--text);
 }
 
 .download-panel small {
@@ -838,6 +824,13 @@ main {
   font-size: 12px;
   line-height: 1.5;
   text-align: center;
+}
+
+.download-verify-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .section-lead {

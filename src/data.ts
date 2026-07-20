@@ -4,14 +4,11 @@ import useCases from "../product/use-cases.json";
 
 export const version = "1.0.0";
 
-export const updateManifestUrl = "https://updates.rushi.app/latest.json";
-
 export type DownloadAsset = {
   id: string;
   platform: string;
   title: string;
   href: string;
-  checksum: string;
   meta: string;
   note: string;
   actionLabel: string;
@@ -26,7 +23,6 @@ export const downloads: DownloadAsset[] = [
     title: "离线安装包",
     recommended: true,
     href: "https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_离线安装包.zip",
-    checksum: "https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_离线安装包.zip.sha256",
     meta: "Windows 10/11 x64 · 推荐主分发",
     note: "请完整解压 zip，再运行同级「如是我闻_1.0.0_Windows_x64_安装包.exe」。不要在压缩包预览窗口里直接双击。",
     actionLabel: "下载离线安装包",
@@ -36,7 +32,6 @@ export const downloads: DownloadAsset[] = [
     platform: "macOS",
     title: "Apple Silicon DMG",
     href: "https://updates.rushi.app/v1.0.0/rushi-desktop_1.0.0_aarch64.dmg",
-    checksum: "https://updates.rushi.app/v1.0.0/rushi-desktop_1.0.0_aarch64.dmg.sha256",
     meta: "Apple Silicon · unsigned DMG",
     note: "首次打开如遇系统提示，请在 Finder 中按住 Control 点击应用，再选择打开。",
     actionLabel: "下载 DMG",
@@ -49,7 +44,6 @@ export const windowsInstaller: DownloadAsset = {
   platform: "Windows",
   title: "安装包 / OTA",
   href: "https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_安装包.exe",
-  checksum: "https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_安装包.exe.sha256",
   meta: "也可单独下载 · 应用内更新同用此包",
   note: "首装仍推荐离线 zip。此 exe 适合已有环境、或仅需安装包 / OTA 资产时单独下载。",
   actionLabel: "下载安装包 EXE",
@@ -58,9 +52,7 @@ export const windowsInstaller: DownloadAsset = {
 export const cudaSidecar = {
   id: "windows-cuda",
   title: "Windows CUDA 侧车",
-  href: "https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_CUDA侧车.zip",
-  note: "面向 NVIDIA 显卡用户，可在应用环境页下载或稍后从 CDN 获取。不是首装必需项；侧车尚未就绪时仍可用 CPU 转写。",
-  pending: true,
+  note: "面向 NVIDIA 显卡用户。不是首装必需项；未安装侧车时仍可用 CPU 转写。",
 };
 
 export const productFeatures = features;

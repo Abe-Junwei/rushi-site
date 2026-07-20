@@ -23,7 +23,7 @@ foldSections: true
 | **Windows 推荐（离线完整包）** | [如是我闻_1.0.0_Windows_x64_离线安装包.zip](https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_离线安装包.zip)（约 1.4 GB） |
 | Windows 安装包（OTA / 也可单独装） | [如是我闻_1.0.0_Windows_x64_安装包.exe](https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_安装包.exe) |
 | **macOS Apple Silicon** | [rushi-desktop_1.0.0_aarch64.dmg](https://updates.rushi.app/v1.0.0/rushi-desktop_1.0.0_aarch64.dmg) |
-| 校验文件 | 在对应下载 URL 后加 `.sha256` |
+| 完整性校验（可选） | 见[下载页](/download)说明；用本地工具对照 SHA256，无需在浏览器打开摘要文件 |
 
 完整入口与校验链接见[下载页](/download)。
 
@@ -101,7 +101,7 @@ foldSections: true
 
 #### 应用内更新失败
 
-改从 CDN 手动下载对应安装包 / DMG；OTA 验签失败时不要强行装。清单地址：`https://updates.rushi.app/latest.json`。
+请改从[下载页](/download)手动下载对应安装包或 DMG；应用内更新失败时不要强行安装。
 
 ### 平台范围
 
