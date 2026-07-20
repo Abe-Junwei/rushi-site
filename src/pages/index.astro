@@ -2,88 +2,167 @@
 import DownloadCards from "../components/DownloadCards.astro";
 import ProductPreview from "../components/ProductPreview.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { guideSteps, productFeatures, productUseCases, version } from "../data";
+import { guideSteps, productUseCases } from "../data";
 
-const featured = productFeatures.slice(0, 3);
+const capabilities = [
+  {
+    eyebrow: "Core capability",
+    title: "本机转写",
+    body: "内置 FunASR 本机模型，首启准备后可断网转写，保障隐私与数据安全；在线 STT 作为可选 Provider，满足不同精度需求。",
+    visual: "local",
+  },
+  {
+    eyebrow: "Workflow",
+    title: "波形校对",
+    body: "Editor 将波形、播放头和语段列表放在同一工作区。支持拆分、合并、冻结与精修，让视听同步所见即所得。",
+    visual: "waveform",
+  },
+  {
+    eyebrow: "Output",
+    title: "交付导出",
+    body: "一键导出 TXT、SRT、DOCX。场次元信息可进入文档抬头，适合长篇课录音整理与最终交付。",
+    visual: "export",
+  },
+] as const;
+
+const heroHighlights = [
+  {
+    label: "本机转写",
+    detail: "FunASR 本机模型，可断网识别；在线 STT 按需接入。",
+  },
+  {
+    label: "波形校对",
+    detail: "波形、播放头与语段同屏，支持拆分、合并与冻结。",
+  },
+  {
+    label: "智能改稿",
+    detail: "定稿模式里规则纠错、智能改稿与大模型润色，差异以修订轨呈现。",
+  },
+  {
+    label: "术语记忆",
+    detail: "术语表偏置识别正形；稳定手改沉淀为纠错记忆，越用越准。",
+  },
+  {
+    label: "本地交付",
+    detail: "导出 TXT、SRT、DOCX；项目数据留在本机，无云端账号墙。",
+  },
+  {
+    label: "项目管理",
+    detail: "Welcome / Project Hub / Editor 分工，场次元信息可进文档抬头。",
+  },
+] as const;
 ---
 
 <BaseLayout>
-  <section class="hero-section">
-    <div class="hero-copy">
-      <span class="eyebrow">Rushi v{version}</span>
-      <h1>如是我闻</h1>
-      <p class="hero-line">本地中文课录音，转写与校对。</p>
-      <p class="hero-support">
-        波形对齐语段，本机完成转写；整理后导出 TXT、SRT、DOCX。
-        面向讲课、访谈、学习笔记和字幕初稿，不把桌面工作流做成云端账号墙。
-      </p>
-      <div class="hero-actions">
-        <a class="button primary" href="/download">获取应用</a>
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <h1>
+        <span class="home-brand">如是我闻</span>
+        <span class="home-headline">本地录音转写与校对智能平台</span>
+      </h1>
+      <ul class="home-highlights">
+        {
+          heroHighlights.map((item) => (
+            <li>
+              <strong>{item.label}</strong>
+              <p>{item.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="home-actions">
+        <a class="button primary" href="#download">获取应用</a>
         <a class="button secondary" href="/features">查看功能</a>
       </div>
-      <p class="note">发版于 updates.rushi.app · 当前无 Linux 桌面包</p>
     </div>
-    <ProductPreview />
+    <div class="home-hero-visual">
+      <ProductPreview />
+    </div>
   </section>
 
-  <section class="band intro-band">
+  <section class="trust-band">
     <p>录音与转写默认在你的电脑上完成。需要在线 STT 时，你也可以按 Provider 单独配置凭证。</p>
   </section>
 
-  <section class="section-block">
-    <div class="section-heading">
-      <span class="eyebrow">Features</span>
-      <h2>从导入到交付，一条本地工作流</h2>
-    </div>
-    <div class="feature-grid">
-      {featured.map((feature) => (
-        <article class="feature-card">
-          <h3>{feature.name}</h3>
-          <p>{feature.shortDescription}</p>
+  <section class="capability-stack" id="features" aria-label="核心能力">
+    {
+      capabilities.map((item, index) => (
+        <article class:list={["capability-row", index % 2 === 1 && "is-reversed"]}>
+          <div class="capability-copy">
+            <span class="capability-eyebrow">{item.eyebrow}</span>
+            <h2>{item.title}</h2>
+            <p>{item.body}</p>
+          </div>
+          <div class:list={["capability-visual", `is-${item.visual}`]} aria-hidden="true">
+            {item.visual === "local" && (
+              <div class="capability-local">
+                <span>本机推理</span>
+                <strong>Local ASR Ready</strong>
+              </div>
+            )}
+            {item.visual === "waveform" && (
+              <div class="capability-wave-panel">
+                <span></span>
+                <span></span>
+                <div class="capability-wave-active"></div>
+              </div>
+            )}
+            {item.visual === "export" && (
+              <div class="capability-files">
+                <span>TXT</span>
+                <span>SRT</span>
+                <span>DOCX</span>
+              </div>
+            )}
+          </div>
         </article>
-      ))}
-    </div>
+      ))
+    }
   </section>
 
-  <section class="section-block muted">
-    <div class="section-heading">
-      <span class="eyebrow">Use cases</span>
-      <h2>适合这些整理场景</h2>
-    </div>
-    <div class="feature-grid">
-      {productUseCases.map((item) => (
-        <article class="feature-card">
-          <h3>{item.title}</h3>
-          <p>{item.description}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="section-block">
-    <div class="section-heading">
-      <span class="eyebrow">How it works</span>
-      <h2>四步完成一份可校对的转写稿</h2>
-    </div>
-    <div class="steps">
-      {guideSteps.map((item) => (
-        <article class="step">
-          <span>{item.step}</span>
-          <h3>{item.title}</h3>
-          <p>{item.body}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="section-block muted">
-    <div class="section-heading split">
+  <section class="scene-workflow">
+    <div class="scene-workflow-grid">
       <div>
-        <span class="eyebrow">Download</span>
-        <h2>选择你的桌面平台</h2>
+        <h2>适合这些整理场景</h2>
+        <ul class="scene-list">
+          {
+            productUseCases.map((item, index) => (
+              <li>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
       </div>
-      <a href="/download">下载说明</a>
+      <div>
+        <h2>四步完成一份可校对的转写稿</h2>
+        <ol class="workflow-list">
+          {
+            guideSteps.map((item, index) => (
+              <li class:list={[index === 2 && "is-current"]}>
+                <span>{item.step}</span>
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.body}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-download" id="download">
+    <div class="home-download-heading">
+      <h2>下载如是我闻</h2>
+      <p>选择你的桌面平台。当前提供 macOS 与 Windows，暂无 Linux 桌面包。</p>
     </div>
     <DownloadCards />
+    <p class="home-download-note">发版于 updates.rushi.app · 安装说明见<a href="/download">下载页</a></p>
   </section>
 </BaseLayout>

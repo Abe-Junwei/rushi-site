@@ -1,34 +1,37 @@
-<div class="product-preview" aria-label="Rushi Editor 界面示意">
-  <div class="preview-topbar">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span>Editor · waveform + segments</span>
+---
+const bars = Array.from({ length: 48 }, (_, index) => 22 + ((index * 17) % 62));
+---
+
+<div class="editor-mock" aria-label="Rushi Editor 界面示意">
+  <div class="editor-mock-bar">
+    <div class="editor-mock-dots" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <span class="editor-mock-file">lecture_01_raw_audio.wav</span>
+    <span class="editor-mock-spacer" aria-hidden="true"></span>
   </div>
-  <div class="preview-body">
-    <aside class="preview-sidebar">
-      <span class="side-title">Project Hub</span>
-      <span class="side-item active">课录音 07-18</span>
-      <span class="side-item">导出记录</span>
-      <span class="side-item">环境</span>
-    </aside>
-    <section class="preview-stage">
-      <div class="waveform">
-        {Array.from({ length: 42 }).map((_, index) => (
-          <span style={`height: ${24 + ((index * 17) % 58)}%`}></span>
-        ))}
-        <i></i>
-      </div>
-      <div class="segment-list">
-        <article class="segment selected">
-          <time>00:12.4 - 00:28.1</time>
-          <p>本地转写结果在这里逐段校对，与波形时间保持对齐。</p>
-        </article>
-        <article class="segment">
-          <time>00:28.1 - 00:41.0</time>
-          <p>拆分、合并、冻结后保存，再导出 TXT / SRT / DOCX。</p>
-        </article>
-      </div>
-    </section>
+
+  <div class="editor-mock-wave">
+    <div class="editor-mock-playhead" aria-hidden="true"></div>
+    <div class="editor-mock-bars" aria-hidden="true">
+      {bars.map((height) => <span style={`height: ${height}%`}></span>)}
+    </div>
+  </div>
+
+  <div class="editor-mock-segments">
+    <article class="editor-segment">
+      <time>00:01:23</time>
+      <p>同学们好，我们今天这节课主要讲一下中国古代文学批评史里的几个核心概念。</p>
+    </article>
+    <article class="editor-segment is-active">
+      <time>00:01:45</time>
+      <p>特别是“意象”这个词，它不仅仅是一个文学术语，更涉及到一种独特的哲学认知方式。</p>
+    </article>
+    <article class="editor-segment is-dim">
+      <time>00:02:10</time>
+      <p>大家可以翻开教材的第三十四页，看那段关于《文心雕龙》的引述。</p>
+    </article>
   </div>
 </div>

@@ -1,15 +1,23 @@
 ---
 import { downloads } from "../data";
+
+const labels: Record<string, string> = {
+  macOS: "下载 DMG 安装包",
+  Windows: "下载离线安装包",
+};
 ---
 
-<div class="download-grid">
-  {downloads.map((item) => (
-    <article class="download-card">
-      <span class="eyebrow">{item.platform}</span>
-      <h3>{item.title}</h3>
-      <p>{item.meta}</p>
-      <a class="button primary" href={item.href}>下载 {item.platform}</a>
-      <small>{item.note}</small>
-    </article>
-  ))}
+<div class="download-panels">
+  {
+    downloads.map((item) => (
+      <article class="download-panel">
+        <h3>{item.platform}</h3>
+        <p class="download-panel-meta">{item.meta}</p>
+        <a class="button primary download-panel-action" href={item.href}>
+          {labels[item.platform] ?? `下载 ${item.platform}`}
+        </a>
+        <small>{item.note}</small>
+      </article>
+    ))
+  }
 </div>
