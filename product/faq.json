@@ -4,11 +4,15 @@
     "answer": "默认本机转写不会为云转写上传音频。若你主动配置在线 STT Provider，则按所选厂商能力工作。"
   },
   {
+    "question": "当前公开版本是多少？",
+    "answer": "以 updates.rushi.app/latest.json 为准；当前为 v1.0.0。安装包托管在 CDN，不再依赖 GitHub Release 挂载。"
+  },
+  {
     "question": "支持哪些平台？",
-    "answer": "当前提供 macOS 和 Windows 桌面包；暂无 Linux 桌面包。"
+    "answer": "当前提供 macOS Apple Silicon 与 Windows x64 桌面包；暂无 Linux 桌面包。"
   },
   {
     "question": "Windows 为什么推荐离线安装包？",
-    "answer": "离线安装包 zip 是主分发入口，内含安装所需资源。请完整解压后运行同级「如是我闻_1.0.0_Windows_x64_安装包.exe」。也可单独下载该 exe 作为安装包 / OTA 资产。"
+    "answer": "离线安装包 zip 是主分发入口，内含安装包与 bundled ASR 模型资源。请完整解压后运行同级「如是我闻_1.0.0_Windows_x64_安装包.exe」。也可单独下载该 exe 作为安装包 / OTA 资产。"
   }
 ]

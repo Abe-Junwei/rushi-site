@@ -8,19 +8,19 @@ const capabilities = [
   {
     eyebrow: "Core capability",
     title: "本机转写",
-    body: "内置 FunASR 本机模型，首启准备后可断网转写，保障隐私与数据安全；在线 STT 作为可选 Provider，满足不同精度需求。",
+    body: "内置 FunASR 本机模型，首启 seed 后可断网转写；在线 STT 作为可选 Provider。Windows 可另下 CUDA 侧车加速。",
     visual: "local",
   },
   {
     eyebrow: "Workflow",
     title: "波形校对",
-    body: "Editor 将波形、播放头和语段列表放在同一工作区。支持拆分、合并、冻结与精修，让视听同步所见即所得。",
+    body: "Editor 将波形、播放头和语段列表放在同一工作区。支持拆分、合并、冻结与精修；变速播放尽量保持音高。",
     visual: "waveform",
   },
   {
     eyebrow: "Output",
     title: "交付导出",
-    body: "一键导出 TXT、SRT、DOCX。场次元信息可进入文档抬头，适合长篇课录音整理与最终交付。",
+    body: "导出 TXT、SRT、DOCX；定稿模式可做规则纠错、智能改稿与大模型润色，场次元信息可进入文档抬头。",
     visual: "export",
   },
 ] as const;

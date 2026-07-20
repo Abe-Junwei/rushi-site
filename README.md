@@ -23,7 +23,7 @@ custom domain to `rushi.app`.
 - `product/features.json`: product capability source of truth
 - `product/use-cases.json`: homepage use-case cards
 - `product/faq.json`: FAQ source for future pages
-- `changes/*.md`: release notes and product update entries
+- `changes/*.md`: end-user release notes (sync with `Abe-Junwei/rushi` + `updates.rushi.app/latest.json`)
 - `docs/**/*.md`: documentation pages
 - `src/data.ts`: download links and shared page data
 - `src/pages/**/*.astro`: page templates
