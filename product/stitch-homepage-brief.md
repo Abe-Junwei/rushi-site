@@ -134,7 +134,7 @@ Motion intent (for annotation only): soft fade/rise of hero copy; gentle playhea
 
 编号步骤（01–04），横向桌面 / 纵向移动；步骤本身不是卡片：
 
-1. 新建项目 — Welcome 创建，导入本地音频，可补场次元信息  
+1. 新建项目 — 欢迎页创建，导入本地音频，可补场次元信息  
 2. 选择转写方式 — 优先本机 ASR；需要时再配在线 STT  
 3. 听写校对 — Editor 对照波形与语段，拆分/合并/冻结  
 4. 保存与导出 — 本地 SQLite；导出 TXT / SRT / DOCX  

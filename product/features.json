@@ -11,7 +11,7 @@
     "id": "waveform-review",
     "name": "波形校对",
     "status": "released",
-    "shortDescription": "Editor 将波形、播放头和语段列表放在同一工作区，支持拆分、合并、冻结与精修。",
+    "shortDescription": "编辑器将波形、播放头和语段列表放在同一工作区，支持拆分、合并、冻结与精修。",
     "docsPath": "/docs/features/waveform-review",
     "releaseDate": "2026-07-20"
   },
@@ -40,10 +40,10 @@
     "releaseDate": "2026-07-20"
   },
   {
-    "id": "project-hub",
+    "id": "project-management",
     "name": "项目管理",
     "status": "released",
-    "shortDescription": "Welcome 创建项目，Project Hub 管理文件与场次元信息，Editor 专注单条音频校对。",
+    "shortDescription": "欢迎页新建与管理项目：展开项目库可导入音频或转录文本、批量转写并编辑场次元信息；打开文件后进入编辑器校对。",
     "docsPath": "/docs/getting-started",
     "releaseDate": "2026-07-20"
   },
