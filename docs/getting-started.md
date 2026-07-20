@@ -12,33 +12,105 @@ foldSections: true
 
 ## 1. 安装与首次启动
 
-先安装桌面应用，再确认本机 ASR 就绪。首次启动时，Rushi 会准备本机模型；准备完成后即可断网转写。
+当前正式版为 **v1.0.0**。先按平台安装，再在首次启动向导中完成模型 seed；准备完成后即可本机转写。
 
-<a class="button primary doc-inline-action" href="/download">前往下载</a>
+<a class="button primary doc-inline-action" href="/download">前往下载页</a>
 
-### macOS
+### 下载
 
-1. 下载 macOS DMG，打开后把应用拖入 Applications。
-2. 若系统提示来自未识别开发者，在 Finder 中按住 Control 点击应用，再选择“打开”。
-3. 首次启动后，等待本机 ASR 模型复制到应用数据目录。
-4. 打开“环境 → 本机 ASR”，确认模型与 sidecar 状态可用。
+| 平台 | 说明 |
+|---|---|
+| **Windows 推荐（离线完整包）** | [如是我闻_1.0.0_Windows_x64_离线安装包.zip](https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_离线安装包.zip)（约 1.4 GB） |
+| Windows 安装包（OTA / 也可单独装） | [如是我闻_1.0.0_Windows_x64_安装包.exe](https://updates.rushi.app/v1.0.0/如是我闻_1.0.0_Windows_x64_安装包.exe) |
+| **macOS Apple Silicon** | [rushi-desktop_1.0.0_aarch64.dmg](https://updates.rushi.app/v1.0.0/rushi-desktop_1.0.0_aarch64.dmg) |
+| 校验文件 | 在对应下载 URL 后加 `.sha256` |
 
-当前包面向 Apple Silicon。安装包为 unsigned DMG；首次打开按上面的 Control 点击流程即可。
+完整入口与校验链接见[下载页](/download)。
 
-### Windows
+### Windows 安装步骤
 
-1. 下载「离线安装包 zip」（推荐主分发）。
-2. **完整解压** zip，再运行同级「如是我闻_1.0.0_Windows_x64_安装包.exe」。不要在压缩包预览窗口里直接双击。
-3. 若 SmartScreen 拦截，确认来源是 Rushi 官网或 updates.rushi.app 后再继续。
-4. 打开「环境 → 本机 ASR」，确认模型与运行时就绪。
+1. 下载 **离线安装包 zip**（约 1.4 GB）。
+2. 右键 → **全部提取**（或解压到任意空文件夹），得到类似结构：
+   - `如是我闻_1.0.0_Windows_x64_安装包.exe`
+   - `resources/bundled-asr-models/…`
+3. 双击运行 **同级** 的 `*_安装包.exe`，按向导完成安装。
+4. 首次启动后按向导完成模型 seed；即可本机转写。
 
-也可单独下载安装包 exe，供 OTA 或已有环境使用。有 NVIDIA 显卡时可在环境页下载 CUDA 侧车以加速本机转写；侧车不是首装必需项，未就绪时仍可用 CPU 转写。
+可选：有 NVIDIA 显卡时，在应用 **设置 → 环境** 下载 CUDA 加速组件（失败不影响 CPU 转写）。
 
-### 平台范围与更新
+### macOS 安装步骤
 
-- 目前正式支持 macOS 与 Windows。Linux 桌面端暂未发布。
-- 支持应用内更新的版本会从 `updates.rushi.app` 拉取清单，确认后下载、验签并安装。
-- 若应用内更新不可用，可从[下载页](/download)或 GitHub Release 手动安装新版。
+1. 下载 `.dmg`，双击打开。
+2. 将应用拖入 **「应用程序」**。
+3. 首次打开：若提示无法验证开发者 → Finder 中 **Control-点击应用 → 打开 → 仍要打开**。
+4. 首次启动后按向导完成模型 seed；在「设置 → 本机 ASR / 环境」确认状态可用。
+
+### 报错处理
+
+#### mac：「已损坏，无法打开」/「应移到废纸篓」
+
+多为隔离属性（quarantine），不是文件真坏了。在 **终端** 执行（按实际应用名二选一）：
+
+```bash
+sudo xattr -cr "/Applications/如是我闻.app"
+```
+
+或：
+
+```bash
+sudo xattr -cr "/Applications/rushi-desktop.app"
+```
+
+输入开机密码后回车，再从「应用程序」启动。
+
+检查是否清掉：
+
+```bash
+xattr -l "/Applications/如是我闻.app"
+```
+
+不应再看到 `com.apple.quarantine`。
+
+若应用还在下载文件夹，先对 `.app` 执行 `xattr -cr "路径/xxx.app"`，再拖进「应用程序」。
+
+#### mac：「无法验证开发者」
+
+- 优先：Control-点击 → 打开。
+- 仍不行：用上面的 `xattr -cr`。
+- 系统设置 → 隐私与安全性 → 若出现「仍要打开」，点一次。
+
+#### Windows：SmartScreen「已阻止…未知应用」
+
+「更多信息」→「仍要运行」。
+
+#### Windows：安装包立刻失败 / 提示缺模型、要完整解压
+
+| 错误做法 | 正确做法 |
+|---|---|
+| 在 zip **预览**里直接开 exe | 先 **完整解压** 再运行 |
+| 只拷贝 exe，没有 `resources` | 解压后的文件夹整体保留，exe 与 `resources` **同级** |
+
+#### Windows：解压后找不到安装包
+
+确认解压目录里同时有：
+
+- `如是我闻_1.0.0_Windows_x64_安装包.exe`
+- `resources\bundled-asr-models\`（含 `manifest.json`）
+
+#### 启动后无法本机转写
+
+1. **设置 → 本机 ASR / 环境**：看侧车与模型状态。
+2. 按向导「应用并重启侧车」。
+3. 仍失败：导出 **诊断包（zip）** 排查。
+
+#### 应用内更新失败
+
+改从 CDN 手动下载对应安装包 / DMG；OTA 验签失败时不要强行装。清单地址：`https://updates.rushi.app/latest.json`。
+
+### 平台范围
+
+- 目前正式支持 macOS（Apple Silicon）与 Windows x64。Linux 桌面端暂未发布。
+- 随包说明与上述内容一致；官网下载页会同步最新 CDN 链接。
 
 ## 2. 认识三个核心界面
 
