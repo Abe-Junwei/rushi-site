@@ -29,6 +29,13 @@ custom domain to `rushi.app`.
 - `src/pages/**/*.astro`: page templates
 - `src/styles/site.css`: visual system and responsive layout
 
+When docs need a shell command, use a copyable block with the bare command only
+(no `$` prompt). Prefer:
+
+```html
+<pre class="doc-command"><code>sudo xattr -cr "/Applications/如是我闻.app"</code></pre>
+```
+
 The intended workflow is:
 
 ```text

@@ -51,32 +51,28 @@ foldSections: true
 
 多为隔离属性（quarantine），不是文件真坏了。在 **终端** 执行（按实际应用名二选一）：
 
-```bash
-sudo xattr -cr "/Applications/如是我闻.app"
-```
+<pre class="doc-command"><code>sudo xattr -cr "/Applications/如是我闻.app"</code></pre>
 
 或：
 
-```bash
-sudo xattr -cr "/Applications/rushi-desktop.app"
-```
+<pre class="doc-command"><code>sudo xattr -cr "/Applications/rushi-desktop.app"</code></pre>
 
 输入开机密码后回车，再从「应用程序」启动。
 
 检查是否清掉：
 
-```bash
-xattr -l "/Applications/如是我闻.app"
-```
+<pre class="doc-command"><code>xattr -l "/Applications/如是我闻.app"</code></pre>
 
 不应再看到 `com.apple.quarantine`。
 
-若应用还在下载文件夹，先对 `.app` 执行 `xattr -cr "路径/xxx.app"`，再拖进「应用程序」。
+若应用还在下载文件夹，先对 `.app` 执行后再拖进「应用程序」，例如：
+
+<pre class="doc-command"><code>sudo xattr -cr "$HOME/Downloads/如是我闻.app"</code></pre>
 
 #### mac：「无法验证开发者」
 
 - 优先：Control-点击 → 打开。
-- 仍不行：用上面的 `xattr -cr`。
+- 仍不行：用上面的清除隔离命令。
 - 系统设置 → 隐私与安全性 → 若出现「仍要打开」，点一次。
 
 #### Windows：SmartScreen「已阻止…未知应用」
