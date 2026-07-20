@@ -2,7 +2,7 @@
 import DownloadCards from "../components/DownloadCards.astro";
 import ProductPreview from "../components/ProductPreview.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { guideSteps, productUseCases } from "../data";
+import { guideSteps, productUseCases, version } from "../data";
 
 const capabilities = [
   {
@@ -163,6 +163,8 @@ const heroHighlights = [
       <p>选择你的桌面平台。当前提供 macOS 与 Windows，暂无 Linux 桌面包。</p>
     </div>
     <DownloadCards />
-    <p class="home-download-note">发版于 updates.rushi.app · 安装说明见<a href="/download">下载页</a></p>
+    <p class="home-download-note">
+      当前版本 v{version} · 发版于 updates.rushi.app · Windows 请完整解压后再安装 · 详见<a href="/download">下载页</a>
+    </p>
   </section>
 </BaseLayout>

@@ -1,26 +1,62 @@
 ---
 import DownloadCards from "../components/DownloadCards.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  cudaSidecar,
+  downloads,
+  updateManifestUrl,
+  version,
+  windowsInstaller,
+} from "../data";
 ---
 
 <BaseLayout title="下载 - 如是我闻 Rushi">
   <section class="page-hero">
-    <span class="eyebrow">下载</span>
+    <span class="eyebrow">下载 · v{version}</span>
     <h1>下载如是我闻桌面版</h1>
-    <p>当前提供 macOS 与 Windows 桌面包。安装包和应用内更新清单均来自 updates.rushi.app。</p>
+    <p>
+      当前正式包为 v{version}，托管于 updates.rushi.app。Windows 推荐下载离线安装包 zip；macOS 提供 Apple Silicon DMG。
+      每个安装包旁附有 SHA256 校验文件，便于核对完整性。
+    </p>
   </section>
+
   <section class="section-block">
-    <DownloadCards />
+    <div class="section-heading">
+      <h2>主下载</h2>
+      <p class="section-lead">日常分发请优先使用下列入口。</p>
+    </div>
+    <DownloadCards items={downloads} />
   </section>
+
   <section class="section-block muted">
-    <div class="info-grid">
+    <div class="section-heading">
+      <h2>其他资产</h2>
+      <p class="section-lead">安装包 EXE、更新清单与可选 GPU 侧车。</p>
+    </div>
+    <div class="info-grid download-extra">
       <article>
-        <h2>Windows GPU 组件</h2>
-        <p>NVIDIA 用户可在应用环境页下载 CUDA 侧车。它不是首装主安装包，失败时仍可继续 CPU 转写。</p>
+        <h2>{windowsInstaller.title}</h2>
+        <p>{windowsInstaller.meta}</p>
+        <p>{windowsInstaller.note}</p>
+        <div class="download-extra-actions">
+          <a class="button primary" href={windowsInstaller.href}>{windowsInstaller.actionLabel}</a>
+          <a class="download-checksum" href={windowsInstaller.checksum}>SHA256 校验文件</a>
+        </div>
       </article>
       <article>
-        <h2>应用内更新</h2>
-        <p>安装版会读取官方更新清单，确认后下载、验签并安装。手动检查入口在设置的关于页。</p>
+        <h2>应用内更新清单</h2>
+        <p>安装版会读取官方 OTA 清单，确认后下载、验签并安装。手动检查入口在设置的关于页。</p>
+        <div class="download-extra-actions">
+          <a class="button secondary" href={updateManifestUrl}>打开 latest.json</a>
+        </div>
+      </article>
+      <article>
+        <h2>{cudaSidecar.title}</h2>
+        <p>{cudaSidecar.note}</p>
+        <div class="download-extra-actions">
+          <a class="button secondary" href={cudaSidecar.href}>CUDA 侧车地址</a>
+        </div>
+        <small>文件就绪前访问可能 404；以应用环境页或 CDN 实际状态为准。</small>
       </article>
     </div>
   </section>

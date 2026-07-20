@@ -27,12 +27,12 @@ foldSections: true
 
 ### Windows
 
-1. 下载“离线安装包 zip”。
-2. **完整解压** zip，再运行同级安装程序。不要在压缩包预览窗口里直接双击 exe。
-3. 若 SmartScreen 拦截，确认来源是 Rushi 官网或 GitHub Release 后再继续。
-4. 打开“环境 → 本机 ASR”，确认模型与运行时就绪。
+1. 下载「离线安装包 zip」（推荐主分发）。
+2. **完整解压** zip，再运行同级「如是我闻_1.0.0_Windows_x64_安装包.exe」。不要在压缩包预览窗口里直接双击。
+3. 若 SmartScreen 拦截，确认来源是 Rushi 官网或 updates.rushi.app 后再继续。
+4. 打开「环境 → 本机 ASR」，确认模型与运行时就绪。
 
-有 NVIDIA 显卡时可在环境页下载 CUDA 侧车以加速本机转写。GPU 不是首装必需项；下载失败仍可使用 CPU 转写。
+也可单独下载安装包 exe，供 OTA 或已有环境使用。有 NVIDIA 显卡时可在环境页下载 CUDA 侧车以加速本机转写；侧车不是首装必需项，未就绪时仍可用 CPU 转写。
 
 ### 平台范围与更新
 

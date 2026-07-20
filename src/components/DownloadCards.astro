@@ -1,21 +1,27 @@
 ---
-import { downloads } from "../data";
+import { downloads, type DownloadAsset } from "../data";
 
-const labels: Record<string, string> = {
-  macOS: "下载 DMG 安装包",
-  Windows: "下载离线安装包",
-};
+interface Props {
+  items?: DownloadAsset[];
+}
+
+const { items = downloads } = Astro.props;
 ---
 
 <div class="download-panels">
   {
-    downloads.map((item) => (
+    items.map((item) => (
       <article class="download-panel">
-        <h3>{item.platform}</h3>
+        <div class="download-panel-head">
+          <h3>{item.platform}</h3>
+          {item.recommended && <span class="download-badge">推荐</span>}
+        </div>
+        <p class="download-panel-title">{item.title}</p>
         <p class="download-panel-meta">{item.meta}</p>
         <a class="button primary download-panel-action" href={item.href}>
-          {labels[item.platform] ?? `下载 ${item.platform}`}
+          {item.actionLabel}
         </a>
+        <a class="download-checksum" href={item.checksum}>SHA256 校验文件</a>
         <small>{item.note}</small>
       </article>
     ))
