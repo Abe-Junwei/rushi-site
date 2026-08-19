@@ -1,12 +1,28 @@
 const SPECIAL_FULLWIDTH_CHARS = ["│", "└", "┼", "─", "┌", "┬", "┤", "├"];
 const BOX_CHAR_PATTERN = /(│|└|┼|─|┌|┬|┤|├)/g;
+const IDEOGRAPHIC_SPACE = "\u3000";
 
 type TreeNode = [row: number, depth: number, text: string, path: number[]];
 
-export const DEFAULT_TREE_SAMPLE = `# 根节点
-## 子节点1
-### 子节点1.1
-## 子节点2`;
+export const DEFAULT_TREE_SAMPLE = `# 寒假集训课纲
+## 第一讲 导论
+### 问题意识
+### 文献地图
+#### 中文研究
+#### 英文研究
+## 第二讲 方法
+### 材料整理
+#### 录音转写
+#### 术语表
+### 论证结构
+#### 主张与限定
+#### 反例与回应
+## 第三讲 写作
+### 段落推进
+### 引文与注释
+## 附录
+### 参考书目
+### 作业节点`;
 
 function isFullwidthChar(ch: string): boolean {
   const cp = ch.codePointAt(0);
@@ -52,10 +68,17 @@ function stripLeadingMarks(line: string, mark: string): string {
   const trimmed = line.trim();
   let i = 0;
   while (i < trimmed.length && trimmed[i] === mark) i += 1;
-  return trimmed.slice(i);
+  return trimmed.slice(i).trim();
 }
 
-export function convertToTableHtml(inputText: string, charMark = "#"): string {
+function packLeadingSpaces(line: string): string {
+  let i = 0;
+  while (i < line.length && line[i] === " ") i += 1;
+  if (i === 0) return line;
+  return `${IDEOGRAPHIC_SPACE.repeat(Math.floor(i / 2))}${" ".repeat(i % 2)}${line.slice(i)}`;
+}
+
+export function convertToTableText(inputText: string, charMark = "#"): string {
   if (!inputText.trim()) return "";
 
   const mark = charMark.charAt(0) || "#";
@@ -94,7 +117,7 @@ export function convertToTableHtml(inputText: string, charMark = "#"): string {
       if (!existing) {
         nodes.push([i, col, "│", deepClone(group[0][3])]);
       } else {
-        existing[2] = `├${existing[2]}`;
+        existing[2] = `├─${existing[2]}`;
       }
     }
 
@@ -103,7 +126,7 @@ export function convertToTableHtml(inputText: string, charMark = "#"): string {
     const midNodes = nodes.filter((node) => node[0] === mid && node[1] === col);
 
     if (group.length === 1) {
-      group[0][2] = `─${group[0][2].slice(1)}`;
+      group[0][2] = `──${group[0][2].slice(2)}`;
     } else {
       group[last][2] = `└${group[last][2].slice(1)}`;
       group[0][2] = `┌${group[0][2].slice(1)}`;
@@ -161,20 +184,24 @@ export function convertToTableHtml(inputText: string, charMark = "#"): string {
 
   const rows: string[] = [];
   for (let i = 1; i <= maxRow; i += 1) {
-    const cells = Array<string>(200).fill(" ");
+    const cells: string[] = [];
     for (let j = 1; j <= maxDepth; j += 1) {
       const matches = nodes.filter((node) => node[0] === i && node[1] === j);
       if (!matches.length) continue;
       let start = sumAncestorWidths(getFather(matches[0])) - getFullwidthCount(cells.join(""));
       if (start < 0) start = 0;
       const text = matches[0][2];
+      while (cells.length < start + text.length) cells.push(" ");
       for (let k = 0; k < text.length; k += 1) cells[start + k] = text[k];
     }
-    rows.push(cells.join("").replace(/\s+$/, ""));
+    rows.push(packLeadingSpaces(cells.join("").replace(/\s+$/, "")));
   }
 
-  return escapeHtml(rows.join("\n")).replace(
-    BOX_CHAR_PATTERN,
-    '<span class="tab-symbol">$1</span>',
-  );
+  return rows.join("\n");
+}
+
+export function convertToTableHtml(inputText: string, charMark = "#"): string {
+  const text = convertToTableText(inputText, charMark);
+  if (!text) return "";
+  return escapeHtml(text).replace(BOX_CHAR_PATTERN, '<span class="tab-symbol">$1</span>');
 }
