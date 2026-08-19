@@ -44,23 +44,41 @@ export const DEFAULT_TREE_SAMPLE = `# 神经系统
 #### 交感神经
 #### 副交感神经`;
 
+function isIgnorableWidthChar(ch: string): boolean {
+  const cp = ch.codePointAt(0);
+  if (cp === undefined) return false;
+  return cp === 0xfe0f || cp === 0x200d || (cp >= 0x1f3fb && cp <= 0x1f3ff);
+}
+
 export function getDisplayWidth(str: string): number {
-  return [...str].reduce((acc, ch) => acc + (isFullwidthChar(ch) ? 2 : 1), 0);
+  return [...str].reduce((acc, ch) => {
+    if (isIgnorableWidthChar(ch)) return acc;
+    return acc + (isFullwidthChar(ch) ? 2 : 1);
+  }, 0);
 }
 
 function isFullwidthChar(ch: string): boolean {
   const cp = ch.codePointAt(0);
   if (cp === undefined) return false;
+  if (SPECIAL_FULLWIDTH_CHARS.includes(ch)) return true;
+  if (cp >= 0xff61 && cp <= 0xffdc) return false;
   return (
-    (0xff00 <= cp && cp <= 0xffef) ||
-    (0x3000 <= cp && cp <= 0x303f) ||
-    (0x4e00 <= cp && cp <= 0x9fff) ||
-    SPECIAL_FULLWIDTH_CHARS.includes(ch)
+    (cp >= 0xff00 && cp <= 0xffef) ||
+    (cp >= 0x3000 && cp <= 0x303f) ||
+    (cp >= 0x3040 && cp <= 0x30ff) ||
+    (cp >= 0x31f0 && cp <= 0x31ff) ||
+    (cp >= 0x3400 && cp <= 0x4dbf) ||
+    (cp >= 0x4e00 && cp <= 0x9fff) ||
+    (cp >= 0xac00 && cp <= 0xd7af) ||
+    (cp >= 0xf900 && cp <= 0xfaff)
   );
 }
 
 function getFullwidthCount(str: string): number {
-  return [...str].reduce((acc, ch) => acc + (isFullwidthChar(ch) ? 1 : 0), 0);
+  return [...str].reduce((acc, ch) => {
+    if (isIgnorableWidthChar(ch)) return acc;
+    return acc + (isFullwidthChar(ch) ? 1 : 0);
+  }, 0);
 }
 
 function deepClone<T>(value: T): T {
@@ -117,6 +135,7 @@ function wrapHtml(text: string): string {
       html += "\n";
       continue;
     }
+    if (isIgnorableWidthChar(ch)) continue;
     const classes = [isFullwidthChar(ch) ? "tree-cell-fw" : "tree-cell-hw"];
     if (BOX_CHARS.has(ch)) classes.push("tab-symbol");
     html += `<span class="${classes.join(" ")}">${escapeHtml(ch)}</span>`;
@@ -132,8 +151,9 @@ export function convertTree(
   if (!inputText.trim()) return { text: "", html: "", warnings: [] };
 
   const layout = options.layout ?? "compact";
-  const mark = charMark.charAt(0) || "#";
+  const mark = charMark.charAt(0)?.trim() ? charMark.charAt(0) : "#";
   const { lines, warnings } = parseOutline(inputText, mark);
+  if (!lines.length) return { text: "", html: "", warnings };
   if (layout === "outline") {
     const text = renderClassicTree(lines);
     return { text, html: wrapHtml(text), warnings };
@@ -240,6 +260,8 @@ export function convertTree(
     current[0] = row;
     current[1] = depth;
     treeCursor += depthDelta;
+    if (treeCursor < 0) treeCursor = 0;
+    if (treeCursor >= tree.length) treeCursor = tree.length - 1;
     tree[treeCursor] += 1;
     for (let i = treeCursor; i < tree.length - 1; i += 1) tree[i + 1] = 0;
     current[3] = deepClone(tree);
