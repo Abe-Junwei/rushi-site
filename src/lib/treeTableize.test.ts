@@ -8,6 +8,7 @@ import {
   DEFAULT_TREE_SAMPLE,
   exportTreeText,
   getDisplayWidth,
+  previewTree,
 } from "./treeTableize.ts";
 
 test("trims hash-and-space labels so the root is flush left", () => {
@@ -200,6 +201,21 @@ test("falls back when the mark is only whitespace", () => {
 test("preview HTML marks kana as fullwidth cells", () => {
   const html = convertToTableHtml(`# あ\n## 子`, "#", { layout: "outline" });
   assert.match(html, /tree-cell-fw">あ/);
+});
+
+test("previewTree keeps a glyph grid for current preview and plain text for exports", () => {
+  const sample = `# 根
+## 子`;
+  const grid = previewTree(sample, "#", "preview", "wide");
+  assert.equal(grid.mode, "grid");
+  assert.match(grid.html, /tree-cell-fw/);
+  assert.equal(grid.text, exportTreeText(sample, "#", "preview", "wide"));
+
+  const mermaid = previewTree(sample, "#", "mermaid", "wide");
+  assert.equal(mermaid.mode, "code");
+  assert.equal(mermaid.html, "");
+  assert.match(mermaid.text, /mindmap\n {2}根\n {4}子/);
+  assert.deepEqual(mermaid.warnings, grid.warnings);
 });
 
 

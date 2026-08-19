@@ -22,15 +22,43 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
         <input id="charMark" type="text" value="#" maxlength="1" />
       </label>
       <div class="tree-layout" role="group" aria-label="排版">
-        <button class="tree-layout-btn" id="layoutCompact" type="button" data-layout="compact">紧凑</button>
-        <button class="tree-layout-btn is-active" id="layoutWide" type="button" data-layout="wide">舒展</button>
-        <button class="tree-layout-btn" id="layoutOutline" type="button" data-layout="outline">大纲</button>
+        <button
+          class="tree-layout-btn"
+          id="layoutCompact"
+          type="button"
+          data-layout="compact"
+          title="横向表格化，子节点紧贴父节点"
+        >
+          紧凑
+        </button>
+        <button
+          class="tree-layout-btn is-active"
+          id="layoutWide"
+          type="button"
+          data-layout="wide"
+          title="横向表格化，同层对齐"
+        >
+          舒展
+        </button>
+        <button
+          class="tree-layout-btn"
+          id="layoutOutline"
+          type="button"
+          data-layout="outline"
+          title="Unix tree 那种竖向树"
+        >
+          大纲
+        </button>
       </div>
       <button class="button secondary" id="resetBtn" type="button">恢复示例</button>
     </div>
-    <p class="tree-hint">
-      紧凑/舒展是横向表格化；大纲是 Unix <code>tree</code> / LaTeX dirtree 那种竖向树。粘贴到 Word / WPS 请用新宋体、单倍行距、关闭自动换行。ASCII 复制更适合 Courier New。以 <code>%%</code>、<code>//</code> 或 <code>&lt;!--</code> 开头的行会忽略。
-    </p>
+    <p class="tree-hint">左侧写大纲，右侧按所选格式即时预览。紧凑 / 舒展 / 大纲只作用于「当前预览」。</p>
+    <details class="tree-help">
+      <summary>粘贴到 Word 与写法</summary>
+      <p>
+        Word / WPS 请用新宋体、单倍行距、关闭自动换行。ASCII 更适合 Courier New。以 <code>%%</code>、<code>//</code> 或 <code>&lt;!--</code> 开头的行会忽略。
+      </p>
+    </details>
     <p class="tree-status" id="treeStatus" hidden></p>
 
     <div class="tree-workspace">
@@ -41,14 +69,14 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
         <textarea id="inputText" rows="16">{DEFAULT_TREE_SAMPLE}</textarea>
       </section>
 
-      <section class="tree-pane">
+      <section class="tree-pane tree-pane-preview">
         <div class="tree-pane-bar">
-          <span>预览 · 纯文本</span>
+          <span id="previewTitle">预览 · 纯文本</span>
           <div class="tree-copy">
             <label class="tree-copy-label">
-              <span class="visually-hidden">复制格式</span>
-              <select id="copyFormat" aria-label="复制格式">
-                <option value="preview">当前预览</option>
+              <span class="visually-hidden">预览与复制格式</span>
+              <select id="copyFormat" aria-label="预览与复制格式">
+                <option value="preview">纯文本树</option>
                 <option value="ascii">ASCII tree</option>
                 <option value="mermaid">Mermaid mindmap</option>
                 <option value="forest">LaTeX forest</option>
@@ -66,9 +94,8 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 
 <script>
   import {
-    convertTree,
     DEFAULT_TREE_SAMPLE,
-    exportTreeText,
+    previewTree,
     type TreeExportFormat,
     type TreeLayout,
   } from "../lib/treeTableize";
@@ -77,6 +104,13 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   const RENDER_DELAY_MS = 80;
   const DEFAULT_LAYOUT: TreeLayout = "wide";
   const FORMATS = ["preview", "ascii", "mermaid", "forest", "dirtree"] as const;
+  const PREVIEW_TITLES: Record<(typeof FORMATS)[number], string> = {
+    preview: "预览 · 纯文本",
+    ascii: "预览 · ASCII tree",
+    mermaid: "预览 · Mermaid",
+    forest: "预览 · LaTeX forest",
+    dirtree: "预览 · LaTeX dirtree",
+  };
 
   const input = document.getElementById("inputText") as HTMLTextAreaElement;
   const mark = document.getElementById("charMark") as HTMLInputElement;
@@ -85,9 +119,11 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
   const status = document.getElementById("treeStatus") as HTMLParagraphElement;
   const copyFormat = document.getElementById("copyFormat") as HTMLSelectElement;
+  const previewTitle = document.getElementById("previewTitle") as HTMLSpanElement;
   const layoutButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-layout]")];
 
   let layout: TreeLayout = DEFAULT_LAYOUT;
+  let lastExport = "";
 
   function debounce(fn: () => void, wait: number) {
     let timer = 0;
@@ -161,35 +197,50 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
     status.textContent = warnings.join(" ");
   }
 
+  function currentFormat(): TreeExportFormat {
+    return FORMATS.includes(copyFormat.value as TreeExportFormat)
+      ? (copyFormat.value as TreeExportFormat)
+      : "preview";
+  }
+
+  function setPreviewTitle(format: TreeExportFormat) {
+    previewTitle.textContent = PREVIEW_TITLES[format];
+  }
+
+  function showEmptyPreview(message: string, warnings: string[] = []) {
+    lastExport = "";
+    output.dataset.empty = "true";
+    output.removeAttribute("data-mode");
+    output.textContent = message;
+    copyBtn.disabled = true;
+    showStatus(warnings);
+  }
+
   function render() {
     saveDraft();
+    const format = currentFormat();
+    setPreviewTitle(format);
     const text = input.value;
     if (!text.trim()) {
-      output.dataset.empty = "true";
-      output.textContent = "输入层级文本后，预览会即时更新。";
-      copyBtn.disabled = true;
-      showStatus([]);
+      showEmptyPreview("输入层级文本后，预览会即时更新。");
       return;
     }
 
     try {
-      const result = convertTree(text, mark.value.trim().charAt(0) || "#", { layout });
+      const result = previewTree(text, mark.value.trim().charAt(0) || "#", format, layout);
       if (!result.text) {
-        output.dataset.empty = "true";
-        output.textContent = result.warnings[0] || "没有可解析的大纲行。";
-        copyBtn.disabled = true;
-        showStatus(result.warnings);
+        showEmptyPreview(result.warnings[0] || "没有可解析的大纲行。", result.warnings);
         return;
       }
-      output.innerHTML = result.html;
+      lastExport = result.text;
       output.dataset.empty = "false";
+      output.dataset.mode = result.mode;
+      if (result.mode === "grid") output.innerHTML = result.html;
+      else output.textContent = result.text;
       copyBtn.disabled = false;
       showStatus(result.warnings);
     } catch {
-      output.dataset.empty = "true";
-      output.textContent = "无法解析当前文本。请检查层级标记是否连续。";
-      copyBtn.disabled = true;
-      showStatus([]);
+      showEmptyPreview("无法解析当前文本。请检查层级标记是否连续。");
     }
   }
 
@@ -203,7 +254,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 
   input.addEventListener("input", scheduleRender);
   mark.addEventListener("input", scheduleRender);
-  copyFormat.addEventListener("change", saveDraft);
+  copyFormat.addEventListener("change", render);
   for (const button of layoutButtons) {
     button.addEventListener("click", () => {
       const next = button.dataset.layout;
@@ -222,11 +273,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   copyBtn.addEventListener("click", async () => {
     scheduleRender.flush();
     if (copyBtn.disabled) return;
-    const format = FORMATS.includes(copyFormat.value as TreeExportFormat)
-      ? (copyFormat.value as TreeExportFormat)
-      : "preview";
-    const exported = exportTreeText(input.value, mark.value.trim().charAt(0) || "#", format, layout);
-    const text = exported.replace(/\r?\n/g, "\r\n");
+    const text = lastExport.replace(/\r?\n/g, "\r\n");
     const previous = copyBtn.textContent;
     try {
       await navigator.clipboard.writeText(text);
