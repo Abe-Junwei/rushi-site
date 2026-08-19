@@ -26,25 +26,23 @@ export type ConvertTreeResult = {
   warnings: string[];
 };
 
-export const DEFAULT_TREE_SAMPLE = `# 寒假集训课纲
-## 第一讲 导论
-### 问题意识
-### 文献地图
-#### 中文研究
-#### 英文研究
-## 第二讲 方法
-### 材料整理
-#### 录音转写
-#### 术语表
-### 论证结构
-#### 主张与限定
-#### 反例与回应
-## 第三讲 写作
-### 段落推进
-### 引文与注释
-## 附录
-### 参考书目
-### 作业节点`;
+export const DEFAULT_TREE_SAMPLE = `# 神经系统
+## 中枢神经系统
+### 脑
+#### 大脑
+#### 间脑
+#### 脑干
+#### 小脑
+### 脊髓
+#### 灰质
+#### 白质
+## 周围神经系统
+### 躯体神经系统
+#### 脑神经
+#### 脊神经
+### 自主神经系统
+#### 交感神经
+#### 副交感神经`;
 
 export function getDisplayWidth(str: string): number {
   return [...str].reduce((acc, ch) => acc + (isFullwidthChar(ch) ? 2 : 1), 0);
