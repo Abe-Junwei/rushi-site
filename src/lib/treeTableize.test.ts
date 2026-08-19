@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  convertToTableHtml,
   convertToTableText,
   convertTree,
   DEFAULT_TREE_SAMPLE,
@@ -113,6 +114,15 @@ test("accepts indented outlines and markdown bullets", () => {
   assert.match(text, /^根节点/);
   assert.match(text, /└─子节点/);
   assert.match(text, /└─叶子/);
+});
+
+test("preview HTML uses fixed cells but copies as plain text", () => {
+  const sample = DEFAULT_TREE_SAMPLE;
+  const text = convertToTableText(sample, "#", { layout: "wide" });
+  const html = convertToTableHtml(sample, "#", { layout: "wide" });
+  assert.equal(html.replace(/<[^>]+>/g, ""), text);
+  assert.match(html, /tree-cell-fw/);
+  assert.match(html, /tab-symbol/);
 });
 
 test("exports mermaid, forest, dirtree and ascii", () => {

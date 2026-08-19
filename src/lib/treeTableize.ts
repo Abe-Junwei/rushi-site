@@ -7,7 +7,7 @@ import {
 } from "./treeOutline.ts";
 
 const SPECIAL_FULLWIDTH_CHARS = ["│", "└", "┼", "─", "┌", "┬", "┤", "├"];
-const BOX_CHAR_PATTERN = /(│|└|┼|─|┌|┬|┤|├)/g;
+const BOX_CHARS = new Set(SPECIAL_FULLWIDTH_CHARS);
 const IDEOGRAPHIC_SPACE = "\u3000";
 const MAX_DEPTH = 20;
 
@@ -111,7 +111,17 @@ function padToDisplayWidth(text: string, width: number): string {
 
 function wrapHtml(text: string): string {
   if (!text) return "";
-  return escapeHtml(text).replace(BOX_CHAR_PATTERN, '<span class="tab-symbol">$1</span>');
+  let html = "";
+  for (const ch of text) {
+    if (ch === "\n") {
+      html += "\n";
+      continue;
+    }
+    const classes = [isFullwidthChar(ch) ? "tree-cell-fw" : "tree-cell-hw"];
+    if (BOX_CHARS.has(ch)) classes.push("tab-symbol");
+    html += `<span class="${classes.join(" ")}">${escapeHtml(ch)}</span>`;
+  }
+  return html;
 }
 
 export function convertTree(
