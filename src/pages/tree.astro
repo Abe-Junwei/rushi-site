@@ -5,13 +5,13 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 
 <BaseLayout
   title="树形文本转表格化视图 - 如是我闻"
-  description="把以层级标记写成的树形文本，即时转换成带连接线的表格化视图。"
+  description="把以层级标记写成的树形文本，即时转换成可粘贴到 Word / WPS 的纯文本连接线图。"
 >
   <section class="page-hero">
     <span class="eyebrow">工具</span>
     <h1>树形文本转表格化视图</h1>
     <p>
-      左侧编辑以 <code>#</code> 标记层级的文本，右侧即时生成连接线图，无需点击。
+      左侧编辑以 <code>#</code> 标记层级的文本，右侧即时生成纯文本连接线图。复制后可贴进 Word、WPS 或其他编辑器；请用「新宋体」或等宽中文字体查看，对齐才保真。
     </p>
   </section>
 
@@ -34,7 +34,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 
       <section class="tree-pane">
         <div class="tree-pane-bar">
-          <span>预览</span>
+          <span>预览 · 纯文本</span>
           <button class="button secondary" id="copyBtn" type="button">复制</button>
         </div>
         <pre id="output" class="tree-output"></pre>
@@ -46,7 +46,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 <script>
   import { convertToTableHtml, DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 
-  const DRAFT_KEY = "rushi.tree-tool.draft";
+  const DRAFT_KEY = "rushi.tree-tool.draft.v2";
   const RENDER_DELAY_MS = 80;
 
   const input = document.getElementById("inputText") as HTMLTextAreaElement;
@@ -126,7 +126,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   copyBtn.addEventListener("click", async () => {
     scheduleRender.flush();
     if (copyBtn.disabled) return;
-    const text = output.textContent ?? "";
+    const text = (output.textContent ?? "").replace(/\r?\n/g, "\r\n");
     try {
       await navigator.clipboard.writeText(text);
       const previous = copyBtn.textContent;

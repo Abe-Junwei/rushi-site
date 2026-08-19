@@ -1135,6 +1135,10 @@ main {
 
 .tree-output {
   overflow: auto;
+  font-family: "NSimSun", "SimSun", "FangSong", "STSong", "Songti SC", "PMingLiU", monospace;
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: 0;
   white-space: pre;
 }
 
@@ -1145,8 +1149,11 @@ main {
 }
 
 .tree-output .tab-symbol {
+  display: inline-block;
+  width: 1em;
   color: var(--saffron-deep);
-  font-weight: 700;
+  font-weight: 400;
+  text-align: center;
 }
 
 .tree-pane-bar .button:disabled {
