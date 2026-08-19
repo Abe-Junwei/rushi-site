@@ -152,7 +152,40 @@ export function convertTree(
     return arraysEqual(getFather(a), getFather(b));
   }
 
+  function isUnder(node: TreeNode, ancestor: TreeNode): boolean {
+    let current: TreeNode | [] = node;
+    while (current.length) {
+      const father = getFather(current);
+      if (!father.length) return false;
+      if (father === ancestor) return true;
+      current = father;
+    }
+    return false;
+  }
+
+  function subtreeEnd(node: TreeNode): number {
+    let end = node[0];
+    for (const other of nodes) {
+      if (other[0] > end && isUnder(other, node)) end = other[0];
+    }
+    return end;
+  }
+
+  function insertRowAfter(row: number) {
+    for (const node of nodes) {
+      if (node[0] > row) node[0] += 1;
+    }
+    maxRow += 1;
+  }
+
   function tablelizeGroup(group: TreeNode[]) {
+    let spacerRow: number | null = null;
+    if (group.length > 1 && group.length % 2 === 0) {
+      const endLeft = subtreeEnd(group[group.length / 2 - 1]);
+      insertRowAfter(endLeft);
+      spacerRow = endLeft + 1;
+    }
+
     const start = group[0][0];
     const end = group[group.length - 1][0];
     const col = group[0][1];
@@ -167,7 +200,7 @@ export function convertTree(
     }
 
     const last = group.length - 1;
-    const mid = Math.floor((start + end) / 2);
+    const mid = spacerRow ?? Math.floor((start + end) / 2);
     const midNodes = nodes.filter((node) => node[0] === mid && node[1] === col);
 
     if (group.length === 1) {

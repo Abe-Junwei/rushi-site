@@ -15,8 +15,8 @@ test("trims hash-and-space labels so the root is flush left", () => {
 ### 子节点1.1
 ## 子节点2`,
   );
-  assert.match(text, /^根节点/);
-  assert.doesNotMatch(text, /^ 根节点/);
+  assert.match(text, /根节点/);
+  assert.doesNotMatch(text, / 根节点/);
 });
 
 test("uses boxed arms and ideographic leading spaces", () => {
@@ -26,7 +26,8 @@ test("uses boxed arms and ideographic leading spaces", () => {
 ### 子节点1.1
 ## 子节点2`,
   );
-  assert.match(text, /┬─子节点1\s*──子节点1\.1/);
+  assert.match(text, /┌─子节点1\s*──子节点1\.1/);
+  assert.match(text, /根节点┤/);
   assert.match(text, /└─子节点2/);
   assert.match(text, /\u3000└─/);
 });
@@ -54,6 +55,19 @@ test("treats unmarked lines as depth 1", () => {
   assert.match(result.text, /根节点/);
   assert.match(result.text, /子节点/);
   assert.match(result.warnings[0] ?? "", /没有标记/);
+});
+
+test("centers a parent between an even number of children", () => {
+  const two = convertToTableText(`# 根\n## 甲\n## 乙`);
+  assert.equal(two, ["　┌─甲", "根┤", "　└─乙"].join("\n"));
+
+  const four = convertToTableText(`# 根\n## 甲\n## 乙\n## 丙\n## 丁`);
+  assert.match(four, /┌─甲/);
+  assert.match(four, /├─乙/);
+  assert.match(four, /^根┤/m);
+  assert.match(four, /├─丙/);
+  assert.match(four, /└─丁/);
+  assert.doesNotMatch(four, /根┼/);
 });
 
 test("wide layout does not trail dashes after leaf labels", () => {
