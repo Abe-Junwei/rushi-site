@@ -1050,6 +1050,94 @@ main {
   margin-top: 8px;
 }
 
+.tree-tool {
+  padding-top: 36px;
+}
+
+.tree-tool-grid {
+  display: grid;
+  max-width: 920px;
+  gap: 18px;
+}
+
+.tree-field,
+.tree-mark {
+  display: grid;
+  gap: 8px;
+}
+
+.tree-field span,
+.tree-mark span,
+.tree-output-bar span {
+  color: var(--text-variant);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.tree-field textarea,
+.tree-output,
+.tree-mark input {
+  width: 100%;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  background: var(--surface-lowest);
+  color: var(--text);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.tree-field textarea {
+  min-height: 180px;
+  padding: 14px;
+  resize: vertical;
+}
+
+.tree-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+
+.tree-mark input {
+  width: 64px;
+  min-height: 46px;
+  padding: 0 12px;
+  text-align: center;
+}
+
+.tree-output-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.tree-output-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tree-output {
+  min-height: 160px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  white-space: pre;
+}
+
+.tree-output .tab-symbol {
+  color: var(--saffron-deep);
+  font-weight: 700;
+}
+
+.page-hero code {
+  border-radius: 4px;
+  background: var(--paper-surface);
+  padding: 1px 6px;
+}
+
 /* —— Docs —— */
 .doc-page {
   padding: 72px var(--page-pad) 112px;

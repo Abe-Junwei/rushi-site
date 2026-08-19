@@ -1,0 +1,71 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
+---
+
+<BaseLayout
+  title="树形文本转表格化视图 - 如是我闻"
+  description="把以层级标记写成的树形文本，转换成带连接线的表格化视图。"
+>
+  <section class="page-hero">
+    <span class="eyebrow">工具</span>
+    <h1>树形文本转表格化视图</h1>
+    <p>输入以 <code>#</code> 表示层级的文本（可修改标记符），生成带连接线的对齐视图。</p>
+  </section>
+
+  <section class="section-block tree-tool">
+    <div class="tree-tool-grid">
+      <label class="tree-field">
+        <span>输入文本</span>
+        <textarea id="inputText" rows="8">{DEFAULT_TREE_SAMPLE}</textarea>
+      </label>
+
+      <div class="tree-toolbar">
+        <label class="tree-mark">
+          <span>行首标记符</span>
+          <input id="charMark" type="text" value="#" maxlength="1" />
+        </label>
+        <button class="button primary" id="run" type="button">生成</button>
+      </div>
+
+      <div class="tree-output-panel">
+        <div class="tree-output-bar">
+          <span>输出</span>
+          <button class="button secondary" id="copyBtn" type="button">复制</button>
+        </div>
+        <pre id="output" class="tree-output" aria-live="polite"></pre>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { convertToTableHtml } from "../lib/treeTableize";
+
+  const input = document.getElementById("inputText") as HTMLTextAreaElement;
+  const mark = document.getElementById("charMark") as HTMLInputElement;
+  const output = document.getElementById("output") as HTMLPreElement;
+  const run = document.getElementById("run") as HTMLButtonElement;
+  const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
+
+  function render() {
+    output.innerHTML = convertToTableHtml(input.value, mark.value || "#");
+  }
+
+  run.addEventListener("click", render);
+  copyBtn.addEventListener("click", async () => {
+    const text = output.textContent ?? "";
+    try {
+      await navigator.clipboard.writeText(text);
+      const previous = copyBtn.textContent;
+      copyBtn.textContent = "已复制";
+      window.setTimeout(() => {
+        copyBtn.textContent = previous;
+      }, 1600);
+    } catch {
+      copyBtn.textContent = "复制失败";
+    }
+  });
+
+  render();
+</script>
