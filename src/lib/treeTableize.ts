@@ -56,6 +56,8 @@ function stripLeadingMarks(line: string, mark: string): string {
 }
 
 export function convertToTableHtml(inputText: string, charMark = "#"): string {
+  if (!inputText.trim()) return "";
+
   const mark = charMark.charAt(0) || "#";
   const lines = inputText.split(/\r?\n/).filter((line) => line.trim());
   const tree = Array<number>(50).fill(0);

@@ -5,55 +5,127 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 
 <BaseLayout
   title="树形文本转表格化视图 - 如是我闻"
-  description="把以层级标记写成的树形文本，转换成带连接线的表格化视图。"
+  description="把以层级标记写成的树形文本，即时转换成带连接线的表格化视图。"
 >
   <section class="page-hero">
     <span class="eyebrow">工具</span>
     <h1>树形文本转表格化视图</h1>
-    <p>输入以 <code>#</code> 表示层级的文本（可修改标记符），生成带连接线的对齐视图。</p>
+    <p>
+      左侧编辑以 <code>#</code> 标记层级的文本，右侧即时生成连接线图，无需点击。
+    </p>
   </section>
 
   <section class="section-block tree-tool">
-    <div class="tree-tool-grid">
-      <label class="tree-field">
-        <span>输入文本</span>
-        <textarea id="inputText" rows="8">{DEFAULT_TREE_SAMPLE}</textarea>
+    <div class="tree-toolbar">
+      <label class="tree-mark">
+        <span>行首标记符</span>
+        <input id="charMark" type="text" value="#" maxlength="1" />
       </label>
+      <button class="button secondary" id="resetBtn" type="button">恢复示例</button>
+    </div>
 
-      <div class="tree-toolbar">
-        <label class="tree-mark">
-          <span>行首标记符</span>
-          <input id="charMark" type="text" value="#" maxlength="1" />
-        </label>
-        <button class="button primary" id="run" type="button">生成</button>
-      </div>
+    <div class="tree-workspace">
+      <section class="tree-pane">
+        <div class="tree-pane-bar">
+          <span>源文本</span>
+        </div>
+        <textarea id="inputText" rows="16">{DEFAULT_TREE_SAMPLE}</textarea>
+      </section>
 
-      <div class="tree-output-panel">
-        <div class="tree-output-bar">
-          <span>输出</span>
+      <section class="tree-pane">
+        <div class="tree-pane-bar">
+          <span>预览</span>
           <button class="button secondary" id="copyBtn" type="button">复制</button>
         </div>
-        <pre id="output" class="tree-output" aria-live="polite"></pre>
-      </div>
+        <pre id="output" class="tree-output"></pre>
+      </section>
     </div>
   </section>
 </BaseLayout>
 
 <script>
-  import { convertToTableHtml } from "../lib/treeTableize";
+  import { convertToTableHtml, DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
+
+  const DRAFT_KEY = "rushi.tree-tool.draft";
+  const RENDER_DELAY_MS = 80;
 
   const input = document.getElementById("inputText") as HTMLTextAreaElement;
   const mark = document.getElementById("charMark") as HTMLInputElement;
   const output = document.getElementById("output") as HTMLPreElement;
-  const run = document.getElementById("run") as HTMLButtonElement;
   const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
+  const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
 
-  function render() {
-    output.innerHTML = convertToTableHtml(input.value, mark.value || "#");
+  function debounce(fn: () => void, wait: number) {
+    let timer = 0;
+    const run = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(fn, wait);
+    };
+    run.flush = () => {
+      window.clearTimeout(timer);
+      fn();
+    };
+    return run as (() => void) & { flush: () => void };
   }
 
-  run.addEventListener("click", render);
+  function loadDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return null;
+      const draft = JSON.parse(raw) as { text?: string; mark?: string };
+      return {
+        text: typeof draft.text === "string" ? draft.text : null,
+        mark: typeof draft.mark === "string" && draft.mark ? draft.mark.slice(0, 1) : null,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  function saveDraft() {
+    localStorage.setItem(
+      DRAFT_KEY,
+      JSON.stringify({ text: input.value, mark: mark.value || "#" }),
+    );
+  }
+
+  function render() {
+    saveDraft();
+    const text = input.value;
+    if (!text.trim()) {
+      output.dataset.empty = "true";
+      output.textContent = "输入层级文本后，预览会即时更新。";
+      copyBtn.disabled = true;
+      return;
+    }
+
+    try {
+      output.innerHTML = convertToTableHtml(text, mark.value || "#");
+      output.dataset.empty = "false";
+      copyBtn.disabled = false;
+    } catch {
+      output.dataset.empty = "true";
+      output.textContent = "无法解析当前文本。请检查层级标记是否连续。";
+      copyBtn.disabled = true;
+    }
+  }
+
+  const scheduleRender = debounce(render, RENDER_DELAY_MS);
+
+  const draft = loadDraft();
+  if (draft?.text != null) input.value = draft.text;
+  if (draft?.mark) mark.value = draft.mark;
+
+  input.addEventListener("input", scheduleRender);
+  mark.addEventListener("input", scheduleRender);
+  resetBtn.addEventListener("click", () => {
+    input.value = DEFAULT_TREE_SAMPLE;
+    mark.value = "#";
+    render();
+  });
   copyBtn.addEventListener("click", async () => {
+    scheduleRender.flush();
+    if (copyBtn.disabled) return;
     const text = output.textContent ?? "";
     try {
       await navigator.clipboard.writeText(text);
