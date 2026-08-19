@@ -1054,82 +1054,104 @@ main {
   padding-top: 36px;
 }
 
-.tree-tool-grid {
-  display: grid;
-  max-width: 920px;
-  gap: 18px;
-}
-
-.tree-field,
-.tree-mark {
-  display: grid;
-  gap: 8px;
-}
-
-.tree-field span,
-.tree-mark span,
-.tree-output-bar span {
-  color: var(--text-variant);
-  font-size: 14px;
-  font-weight: 650;
-}
-
-.tree-field textarea,
-.tree-output,
-.tree-mark input {
-  width: 100%;
-  border: 1px solid var(--paper-border);
-  border-radius: 8px;
-  background: var(--surface-lowest);
-  color: var(--text);
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 14px;
-  line-height: 1.55;
-}
-
-.tree-field textarea {
-  min-height: 180px;
-  padding: 14px;
-  resize: vertical;
-}
-
 .tree-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
   gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tree-mark {
+  display: grid;
+  gap: 8px;
+}
+
+.tree-mark span,
+.tree-pane-bar span {
+  color: var(--text-variant);
+  font-size: 14px;
+  font-weight: 650;
 }
 
 .tree-mark input {
   width: 64px;
   min-height: 46px;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  background: var(--surface-lowest);
+  color: var(--text);
   padding: 0 12px;
   text-align: center;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 14px;
 }
 
-.tree-output-panel {
+.tree-workspace {
   display: grid;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  min-height: 520px;
 }
 
-.tree-output-bar {
+.tree-pane {
+  display: flex;
+  min-height: 520px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  background: var(--surface-lowest);
+}
+
+.tree-pane-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 10px 12px;
+  background: var(--paper-surface);
+}
+
+.tree-pane textarea,
+.tree-output {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 14px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  resize: none;
+}
+
+.tree-pane textarea:focus {
+  outline: none;
 }
 
 .tree-output {
-  min-height: 160px;
-  margin: 0;
   overflow: auto;
-  padding: 14px;
   white-space: pre;
+}
+
+.tree-output[data-empty="true"] {
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  white-space: normal;
 }
 
 .tree-output .tab-symbol {
   color: var(--saffron-deep);
   font-weight: 700;
+}
+
+.tree-pane-bar .button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .page-hero code {
@@ -1460,8 +1482,14 @@ main {
   .steps,
   .download-grid,
   .info-grid,
-  .info-grid.download-extra {
+  .info-grid.download-extra,
+  .tree-workspace {
     grid-template-columns: 1fr;
+  }
+
+  .tree-workspace,
+  .tree-pane {
+    min-height: 360px;
   }
 
   .section-heading.split,
@@ -1506,6 +1534,11 @@ main {
   .download-panel-action,
   .button {
     width: 100%;
+  }
+
+  .tree-toolbar .button,
+  .tree-pane-bar .button {
+    width: auto;
   }
 
   .header-cta {
