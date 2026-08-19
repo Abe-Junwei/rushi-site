@@ -29,7 +29,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
       <button class="button secondary" id="resetBtn" type="button">恢复示例</button>
     </div>
     <p class="tree-hint">
-      紧凑/舒展是横向表格化；大纲是 Unix <code>tree</code> / LaTeX dirtree 那种竖向树。粘贴到 Word / WPS 请用新宋体、单倍行距、关闭自动换行。ASCII 复制更适合 Courier New。
+      紧凑/舒展是横向表格化；大纲是 Unix <code>tree</code> / LaTeX dirtree 那种竖向树。粘贴到 Word / WPS 请用新宋体、单倍行距、关闭自动换行。ASCII 复制更适合 Courier New。以 <code>%%</code>、<code>//</code> 或 <code>&lt;!--</code> 开头的行会忽略。
     </p>
     <p class="tree-status" id="treeStatus" hidden></p>
 
@@ -136,15 +136,19 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   }
 
   function saveDraft() {
-    localStorage.setItem(
-      DRAFT_KEY,
-      JSON.stringify({
-        text: input.value,
-        mark: mark.value || "#",
-        layout,
-        format: copyFormat.value,
-      }),
-    );
+    try {
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({
+          text: input.value,
+          mark: mark.value.trim().charAt(0) || "#",
+          layout,
+          format: copyFormat.value,
+        }),
+      );
+    } catch {
+      // 隐私模式或配额满时不打断编辑。
+    }
   }
 
   function showStatus(warnings: string[]) {
@@ -169,7 +173,14 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
     }
 
     try {
-      const result = convertTree(text, mark.value || "#", { layout });
+      const result = convertTree(text, mark.value.trim().charAt(0) || "#", { layout });
+      if (!result.text) {
+        output.dataset.empty = "true";
+        output.textContent = result.warnings[0] || "没有可解析的大纲行。";
+        copyBtn.disabled = true;
+        showStatus(result.warnings);
+        return;
+      }
       output.innerHTML = result.html;
       output.dataset.empty = "false";
       copyBtn.disabled = false;
@@ -214,18 +225,18 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
     const format = FORMATS.includes(copyFormat.value as TreeExportFormat)
       ? (copyFormat.value as TreeExportFormat)
       : "preview";
-    const exported = exportTreeText(input.value, mark.value || "#", format, layout);
+    const exported = exportTreeText(input.value, mark.value.trim().charAt(0) || "#", format, layout);
     const text = exported.replace(/\r?\n/g, "\r\n");
+    const previous = copyBtn.textContent;
     try {
       await navigator.clipboard.writeText(text);
-      const previous = copyBtn.textContent;
       copyBtn.textContent = "已复制";
-      window.setTimeout(() => {
-        copyBtn.textContent = previous;
-      }, 1600);
     } catch {
       copyBtn.textContent = "复制失败";
     }
+    window.setTimeout(() => {
+      copyBtn.textContent = previous;
+    }, 1600);
   });
 
   render();
