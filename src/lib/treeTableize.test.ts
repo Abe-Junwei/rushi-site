@@ -36,7 +36,7 @@ test("sample covers four heading levels and several sibling groups", () => {
   assert.equal(Math.max(...marks), 4);
   assert.ok(DEFAULT_TREE_SAMPLE.split("\n").length >= 12);
   const text = convertToTableText(DEFAULT_TREE_SAMPLE);
-  assert.match(text, /寒假集训课纲/);
+  assert.match(text, /神经系统/);
   assert.match(text, /[┌┬└┼]/);
   assert.match(text, /\u3000/);
 });
@@ -75,9 +75,9 @@ test("wide layout aligns same-depth children to one column", () => {
 
 test("outline layout uses a vertical tree like Unix tree", () => {
   const text = convertToTableText(DEFAULT_TREE_SAMPLE, "#", { layout: "outline" });
-  assert.match(text, /^寒假集训课纲/m);
-  assert.match(text, /├─第一讲 导论/);
-  assert.match(text, /└─附录/);
+  assert.match(text, /^神经系统/m);
+  assert.match(text, /├─中枢神经系统/);
+  assert.match(text, /└─周围神经系统/);
   assert.doesNotMatch(text, /[┌┬┼]/);
 });
 
