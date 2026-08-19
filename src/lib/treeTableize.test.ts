@@ -35,10 +35,15 @@ test("uses boxed arms and ideographic leading spaces", () => {
   assert.match(text, /\u3000└─/);
 });
 
-test("sample covers four heading levels and several sibling groups", () => {
+test("sample follows systematic anatomy and covers five heading levels", () => {
   const marks = DEFAULT_TREE_SAMPLE.split("\n").map((line) => line.match(/^#+/)?.[0].length ?? 0);
-  assert.equal(Math.max(...marks), 4);
-  assert.ok(DEFAULT_TREE_SAMPLE.split("\n").length >= 12);
+  assert.equal(Math.max(...marks), 5);
+  assert.ok(DEFAULT_TREE_SAMPLE.split("\n").length >= 16);
+  assert.match(DEFAULT_TREE_SAMPLE, /端脑/);
+  assert.match(DEFAULT_TREE_SAMPLE, /中脑/);
+  assert.match(DEFAULT_TREE_SAMPLE, /内脏神经系统/);
+  assert.doesNotMatch(DEFAULT_TREE_SAMPLE, /大脑/);
+  assert.doesNotMatch(DEFAULT_TREE_SAMPLE, /躯体神经系统[\s\S]*脑神经/);
   const text = convertToTableText(DEFAULT_TREE_SAMPLE);
   assert.match(text, /神经系统/);
   assert.match(text, /[┌┬└┼]/);
