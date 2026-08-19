@@ -1086,12 +1086,27 @@ main {
 }
 
 .tree-hint,
+.tree-help,
 .tree-status {
   max-width: 920px;
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   color: var(--text-muted);
   font-size: 13px;
   line-height: 1.55;
+}
+
+.tree-help {
+  margin-bottom: 16px;
+}
+
+.tree-help summary {
+  cursor: pointer;
+  color: var(--text-variant);
+  font-weight: 650;
+}
+
+.tree-help p {
+  margin: 8px 0 0;
 }
 
 .tree-status {
@@ -1140,6 +1155,18 @@ main {
   background: var(--surface-lowest);
 }
 
+.tree-pane:focus-within {
+  border-color: color-mix(in srgb, var(--saffron) 42%, var(--paper-border));
+}
+
+.tree-pane-preview {
+  background: color-mix(in srgb, var(--paper-base) 78%, #efe4cf);
+}
+
+.tree-pane-preview .tree-pane-bar {
+  background: color-mix(in srgb, var(--paper-surface) 72%, #eadcc4);
+}
+
 .tree-pane-bar {
   display: flex;
   align-items: center;
@@ -1176,6 +1203,19 @@ main {
   line-height: 1;
   letter-spacing: 0;
   white-space: pre;
+}
+
+.tree-output[data-mode="grid"] {
+  padding: 18px 16px;
+  font-size: 17px;
+}
+
+.tree-output[data-mode="code"] {
+  padding: 18px 16px;
+  color: var(--text-variant);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.55;
 }
 
 .tree-output[data-empty="true"] {
@@ -1237,7 +1277,9 @@ main {
   white-space: nowrap;
 }
 
-.page-hero code {
+.page-hero code,
+.tree-hint code,
+.tree-help code {
   border-radius: 4px;
   background: var(--paper-surface);
   padding: 1px 6px;

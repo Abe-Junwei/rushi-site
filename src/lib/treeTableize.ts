@@ -361,3 +361,23 @@ export function exportTreeText(
   if (format === "forest") return toLatexForest(lines);
   return toLatexDirtree(lines);
 }
+
+export type PreviewMode = "grid" | "code";
+
+export type PreviewTreeResult = ConvertTreeResult & { mode: PreviewMode };
+
+export function previewTree(
+  inputText: string,
+  charMark = "#",
+  format: TreeExportFormat = "preview",
+  layout: TreeLayout = "compact",
+): PreviewTreeResult {
+  const table = convertTree(inputText, charMark, { layout });
+  if (format === "preview") return { ...table, mode: "grid" };
+  return {
+    text: exportTreeText(inputText, charMark, format, layout),
+    html: "",
+    warnings: table.warnings,
+    mode: "code",
+  };
+}
