@@ -248,7 +248,11 @@ export function convertTree(
       const matches = nodes.filter((node) => node[0] === i && node[1] === j);
       if (!matches.length) continue;
       const rawText = matches[0][2];
-      const text = layout === "wide" ? padToDisplayWidth(rawText, columnWidths[j]) : rawText;
+      const continuesRight = nodes.some((node) => node[0] === i && node[1] > j);
+      const text =
+        layout === "wide" && continuesRight
+          ? padToDisplayWidth(rawText, columnWidths[j])
+          : rawText;
       const startDisplay =
         layout === "wide" ? wideAncestorWidth(j) : sumAncestorWidths(getFather(matches[0]));
       let start = startDisplay - getFullwidthCount(cells.join(""));

@@ -56,6 +56,13 @@ test("treats unmarked lines as depth 1", () => {
   assert.match(result.warnings[0] ?? "", /没有标记/);
 });
 
+test("wide layout does not trail dashes after leaf labels", () => {
+  const text = convertToTableText(DEFAULT_TREE_SAMPLE, "#", { layout: "wide" });
+  assert.match(text, /脑─/);
+  assert.doesNotMatch(text, /大脑─/);
+  assert.doesNotMatch(text, /副交感神经─/);
+});
+
 test("wide layout aligns same-depth children to one column", () => {
   const text = convertToTableText(
     `# 父节点
