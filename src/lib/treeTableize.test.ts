@@ -4,6 +4,7 @@ import {
   convertToTableText,
   convertTree,
   DEFAULT_TREE_SAMPLE,
+  exportTreeText,
   getDisplayWidth,
 } from "./treeTableize.ts";
 
@@ -71,4 +72,35 @@ test("wide layout aligns same-depth children to one column", () => {
   assert.ok(jia && yi);
   assert.equal(getDisplayWidth(jia.slice(0, jia.indexOf("甲"))), getDisplayWidth(yi.slice(0, yi.indexOf("乙"))));
 });
+
+test("outline layout uses a vertical tree like Unix tree", () => {
+  const text = convertToTableText(DEFAULT_TREE_SAMPLE, "#", { layout: "outline" });
+  assert.match(text, /^寒假集训课纲/m);
+  assert.match(text, /├─第一讲 导论/);
+  assert.match(text, /└─附录/);
+  assert.doesNotMatch(text, /[┌┬┼]/);
+});
+
+test("accepts indented outlines and markdown bullets", () => {
+  const text = convertToTableText(
+    `根节点
+  - 子节点
+    - 叶子`,
+    "#",
+    { layout: "outline" },
+  );
+  assert.match(text, /^根节点/);
+  assert.match(text, /└─子节点/);
+  assert.match(text, /└─叶子/);
+});
+
+test("exports mermaid, forest, dirtree and ascii", () => {
+  const sample = `# 根
+## 子`;
+  assert.match(exportTreeText(sample, "#", "mermaid"), /mindmap\n {2}根\n {4}子/);
+  assert.match(exportTreeText(sample, "#", "forest"), /\\begin\{forest\}[\s\S]*\[根[\s\S]*\[子\][\s\S]*\\end\{forest\}/);
+  assert.match(exportTreeText(sample, "#", "dirtree"), /\\dirtree\{%\n\.1 根\.\n\.2 子\.\n\}/);
+  assert.match(exportTreeText(sample, "#", "ascii"), /`-- 子/);
+});
+
 

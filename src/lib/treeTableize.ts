@@ -1,12 +1,20 @@
+import {
+  parseOutline,
+  renderClassicTree,
+  toLatexDirtree,
+  toLatexForest,
+  toMermaidMindmap,
+} from "./treeOutline.ts";
+
 const SPECIAL_FULLWIDTH_CHARS = ["│", "└", "┼", "─", "┌", "┬", "┤", "├"];
 const BOX_CHAR_PATTERN = /(│|└|┼|─|┌|┬|┤|├)/g;
 const IDEOGRAPHIC_SPACE = "\u3000";
 const MAX_DEPTH = 20;
 
 type TreeNode = [row: number, depth: number, text: string, path: number[]];
-type OutlineLine = { depth: number; label: string };
 
-export type TreeLayout = "compact" | "wide";
+export type TreeLayout = "compact" | "wide" | "outline";
+export type TreeExportFormat = "preview" | "mermaid" | "forest" | "dirtree" | "ascii";
 
 export type ConvertTreeOptions = {
   layout?: TreeLayout;
@@ -72,19 +80,6 @@ function escapeHtml(str: string): string {
     .replace(/>/g, "&gt;");
 }
 
-function countLeadingMarks(line: string, mark: string): number {
-  let i = 0;
-  while (i < line.length && line[i] === mark) i += 1;
-  return i;
-}
-
-function stripLeadingMarks(line: string, mark: string): string {
-  const trimmed = line.trim();
-  let i = 0;
-  while (i < trimmed.length && trimmed[i] === mark) i += 1;
-  return trimmed.slice(i).trim();
-}
-
 function packLeadingSpaces(line: string): string {
   let i = 0;
   while (i < line.length && line[i] === " ") i += 1;
@@ -116,45 +111,6 @@ function padToDisplayWidth(text: string, width: number): string {
   return out;
 }
 
-function normalizeOutline(inputText: string, mark: string): { lines: OutlineLine[]; warnings: string[] } {
-  const warnings: string[] = [];
-  const raw: OutlineLine[] = [];
-  let unmarked = 0;
-  let clamped = 0;
-
-  for (const line of inputText.split(/\r?\n/)) {
-    if (!line.trim()) continue;
-    let depth = countLeadingMarks(line, mark);
-    if (depth === 0) {
-      depth = 1;
-      unmarked += 1;
-    }
-    if (depth > MAX_DEPTH) {
-      depth = MAX_DEPTH;
-      clamped += 1;
-    }
-    raw.push({ depth, label: stripLeadingMarks(line, mark) });
-  }
-
-  const lines: OutlineLine[] = [];
-  let previous = 0;
-  let filled = 0;
-  for (const item of raw) {
-    const start = previous === 0 ? 1 : previous + 1;
-    for (let depth = start; depth < item.depth; depth += 1) {
-      lines.push({ depth, label: "" });
-      filled += 1;
-    }
-    lines.push(item);
-    previous = item.depth;
-  }
-
-  if (filled) warnings.push(`已补齐 ${filled} 处跳级，按连续层级生成。`);
-  if (unmarked) warnings.push(`有 ${unmarked} 行没有标记，已按第 1 层处理。`);
-  if (clamped) warnings.push(`有 ${clamped} 行超过 ${MAX_DEPTH} 层，已截到第 ${MAX_DEPTH} 层。`);
-  return { lines, warnings };
-}
-
 function wrapHtml(text: string): string {
   if (!text) return "";
   return escapeHtml(text).replace(BOX_CHAR_PATTERN, '<span class="tab-symbol">$1</span>');
@@ -169,7 +125,11 @@ export function convertTree(
 
   const layout = options.layout ?? "compact";
   const mark = charMark.charAt(0) || "#";
-  const { lines, warnings } = normalizeOutline(inputText, mark);
+  const { lines, warnings } = parseOutline(inputText, mark);
+  if (layout === "outline") {
+    const text = renderClassicTree(lines);
+    return { text, html: wrapHtml(text), warnings };
+  }
   const tree = Array<number>(MAX_DEPTH + 2).fill(0);
   let treeCursor = 0;
   const nodes: TreeNode[] = [];
@@ -319,4 +279,18 @@ export function convertToTableHtml(
   options: ConvertTreeOptions = {},
 ): string {
   return convertTree(inputText, charMark, options).html;
+}
+
+export function exportTreeText(
+  inputText: string,
+  charMark = "#",
+  format: TreeExportFormat = "preview",
+  layout: TreeLayout = "compact",
+): string {
+  if (format === "preview") return convertTree(inputText, charMark, { layout }).text;
+  const { lines } = parseOutline(inputText, charMark);
+  if (format === "ascii") return renderClassicTree(lines, true);
+  if (format === "mermaid") return toMermaidMindmap(lines);
+  if (format === "forest") return toLatexForest(lines);
+  return toLatexDirtree(lines);
 }

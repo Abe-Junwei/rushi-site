@@ -1197,6 +1197,31 @@ main {
   cursor: not-allowed;
 }
 
+.tree-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tree-copy select {
+  min-height: 36px;
+  border: 1px solid var(--paper-border);
+  border-radius: 6px;
+  background: var(--surface-lowest);
+  color: var(--text);
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .page-hero code {
   border-radius: 4px;
   background: var(--paper-surface);
