@@ -1580,7 +1580,8 @@ main {
   }
 
   .tree-toolbar .button,
-  .tree-pane-bar .button {
+  .tree-pane-bar .button,
+  .tree-layout-btn {
     width: auto;
   }
 
