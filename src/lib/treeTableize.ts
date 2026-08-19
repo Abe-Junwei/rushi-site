@@ -43,11 +43,16 @@ export const DEFAULT_TREE_SAMPLE = `# 神经系统
 #### 骶髓
 #### 尾髓
 ## 周围神经系统
-### 脑神经
-### 脊神经
-### 内脏神经系统
-#### 交感神经
-#### 副交感神经`;
+### 按联属
+#### 脑神经
+#### 脊神经
+### 按分布
+#### 躯体神经
+#### 内脏神经
+##### 内脏运动神经
+###### 交感神经
+###### 副交感神经
+##### 内脏感觉神经`;
 
 function isIgnorableWidthChar(ch: string): boolean {
   const cp = ch.codePointAt(0);
