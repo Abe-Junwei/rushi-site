@@ -1171,9 +1171,9 @@ main {
 
 .tree-output {
   overflow: auto;
-  font-family: "NSimSun", "SimSun", "FangSong", "STSong", "Songti SC", "PMingLiU", monospace;
-  font-size: 15px;
-  line-height: 1.45;
+  font-family: "NSimSun", "SimSun", "FangSong", "STSong", "Songti SC", "Noto Serif SC", monospace;
+  font-size: 16px;
+  line-height: 1;
   letter-spacing: 0;
   white-space: pre;
 }
@@ -1181,15 +1181,30 @@ main {
 .tree-output[data-empty="true"] {
   color: var(--text-muted);
   font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
   white-space: normal;
 }
 
-.tree-output .tab-symbol {
+.tree-output .tree-cell-fw,
+.tree-output .tree-cell-hw {
   display: inline-block;
+  line-height: 1;
+  vertical-align: top;
+  text-align: center;
+}
+
+.tree-output .tree-cell-fw {
   width: 1em;
+}
+
+.tree-output .tree-cell-hw {
+  width: 0.5em;
+}
+
+.tree-output .tab-symbol {
   color: var(--saffron-deep);
   font-weight: 400;
-  text-align: center;
 }
 
 .tree-pane-bar .button:disabled {
