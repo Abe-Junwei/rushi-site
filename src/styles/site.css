@@ -1059,7 +1059,43 @@ main {
   flex-wrap: wrap;
   align-items: end;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+}
+
+.tree-layout {
+  display: inline-flex;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--paper-surface);
+}
+
+.tree-layout-btn {
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+  color: var(--text-variant);
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.tree-layout-btn.is-active {
+  background: var(--saffron);
+  color: #fff;
+}
+
+.tree-hint,
+.tree-status {
+  max-width: 920px;
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.tree-status {
+  color: var(--saffron-deep);
 }
 
 .tree-mark {

@@ -11,7 +11,7 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
     <span class="eyebrow">工具</span>
     <h1>树形文本转表格化视图</h1>
     <p>
-      左侧编辑以 <code>#</code> 标记层级的文本，右侧即时生成纯文本连接线图。复制后可贴进 Word、WPS 或其他编辑器；请用「新宋体」或等宽中文字体查看，对齐才保真。
+      左侧编辑以 <code>#</code> 标记层级的文本，右侧即时生成纯文本连接线图。复制后可贴进 Word、WPS 或其他编辑器。
     </p>
   </section>
 
@@ -21,8 +21,16 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
         <span>行首标记符</span>
         <input id="charMark" type="text" value="#" maxlength="1" />
       </label>
+      <div class="tree-layout" role="group" aria-label="排版">
+        <button class="tree-layout-btn" id="layoutCompact" type="button" data-layout="compact">紧凑</button>
+        <button class="tree-layout-btn is-active" id="layoutWide" type="button" data-layout="wide">舒展</button>
+      </div>
       <button class="button secondary" id="resetBtn" type="button">恢复示例</button>
     </div>
+    <p class="tree-hint">
+      粘贴到 Word / WPS：选中该段 → 字体设为「新宋体」或等宽中文字体 → 单倍行距 → 关闭自动换行。不要用微软雅黑。跳级标题会自动补层。
+    </p>
+    <p class="tree-status" id="treeStatus" hidden></p>
 
     <div class="tree-workspace">
       <section class="tree-pane">
@@ -44,16 +52,21 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
 </BaseLayout>
 
 <script>
-  import { convertToTableHtml, DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
+  import { convertTree, DEFAULT_TREE_SAMPLE, type TreeLayout } from "../lib/treeTableize";
 
-  const DRAFT_KEY = "rushi.tree-tool.draft.v2";
+  const DRAFT_KEY = "rushi.tree-tool.draft.v3";
   const RENDER_DELAY_MS = 80;
+  const DEFAULT_LAYOUT: TreeLayout = "wide";
 
   const input = document.getElementById("inputText") as HTMLTextAreaElement;
   const mark = document.getElementById("charMark") as HTMLInputElement;
   const output = document.getElementById("output") as HTMLPreElement;
   const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
   const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
+  const status = document.getElementById("treeStatus") as HTMLParagraphElement;
+  const layoutButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-layout]")];
+
+  let layout: TreeLayout = DEFAULT_LAYOUT;
 
   function debounce(fn: () => void, wait: number) {
     let timer = 0;
@@ -68,14 +81,22 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
     return run as (() => void) & { flush: () => void };
   }
 
+  function setLayout(next: TreeLayout) {
+    layout = next;
+    for (const button of layoutButtons) {
+      button.classList.toggle("is-active", button.dataset.layout === next);
+    }
+  }
+
   function loadDraft() {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (!raw) return null;
-      const draft = JSON.parse(raw) as { text?: string; mark?: string };
+      const draft = JSON.parse(raw) as { text?: string; mark?: string; layout?: string };
       return {
         text: typeof draft.text === "string" ? draft.text : null,
         mark: typeof draft.mark === "string" && draft.mark ? draft.mark.slice(0, 1) : null,
+        layout: draft.layout === "compact" || draft.layout === "wide" ? draft.layout : null,
       };
     } catch {
       return null;
@@ -85,8 +106,18 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   function saveDraft() {
     localStorage.setItem(
       DRAFT_KEY,
-      JSON.stringify({ text: input.value, mark: mark.value || "#" }),
+      JSON.stringify({ text: input.value, mark: mark.value || "#", layout }),
     );
+  }
+
+  function showStatus(warnings: string[]) {
+    if (!warnings.length) {
+      status.hidden = true;
+      status.textContent = "";
+      return;
+    }
+    status.hidden = false;
+    status.textContent = warnings.join(" ");
   }
 
   function render() {
@@ -96,17 +127,21 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
       output.dataset.empty = "true";
       output.textContent = "输入层级文本后，预览会即时更新。";
       copyBtn.disabled = true;
+      showStatus([]);
       return;
     }
 
     try {
-      output.innerHTML = convertToTableHtml(text, mark.value || "#");
+      const result = convertTree(text, mark.value || "#", { layout });
+      output.innerHTML = result.html;
       output.dataset.empty = "false";
       copyBtn.disabled = false;
+      showStatus(result.warnings);
     } catch {
       output.dataset.empty = "true";
       output.textContent = "无法解析当前文本。请检查层级标记是否连续。";
       copyBtn.disabled = true;
+      showStatus([]);
     }
   }
 
@@ -115,12 +150,22 @@ import { DEFAULT_TREE_SAMPLE } from "../lib/treeTableize";
   const draft = loadDraft();
   if (draft?.text != null) input.value = draft.text;
   if (draft?.mark) mark.value = draft.mark;
+  setLayout(draft?.layout ?? DEFAULT_LAYOUT);
 
   input.addEventListener("input", scheduleRender);
   mark.addEventListener("input", scheduleRender);
+  for (const button of layoutButtons) {
+    button.addEventListener("click", () => {
+      const next = button.dataset.layout;
+      if (next !== "compact" && next !== "wide") return;
+      setLayout(next);
+      render();
+    });
+  }
   resetBtn.addEventListener("click", () => {
     input.value = DEFAULT_TREE_SAMPLE;
     mark.value = "#";
+    setLayout(DEFAULT_LAYOUT);
     render();
   });
   copyBtn.addEventListener("click", async () => {

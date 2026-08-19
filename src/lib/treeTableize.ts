@@ -1,8 +1,22 @@
 const SPECIAL_FULLWIDTH_CHARS = ["│", "└", "┼", "─", "┌", "┬", "┤", "├"];
 const BOX_CHAR_PATTERN = /(│|└|┼|─|┌|┬|┤|├)/g;
 const IDEOGRAPHIC_SPACE = "\u3000";
+const MAX_DEPTH = 20;
 
 type TreeNode = [row: number, depth: number, text: string, path: number[]];
+type OutlineLine = { depth: number; label: string };
+
+export type TreeLayout = "compact" | "wide";
+
+export type ConvertTreeOptions = {
+  layout?: TreeLayout;
+};
+
+export type ConvertTreeResult = {
+  text: string;
+  html: string;
+  warnings: string[];
+};
 
 export const DEFAULT_TREE_SAMPLE = `# 寒假集训课纲
 ## 第一讲 导论
@@ -24,6 +38,10 @@ export const DEFAULT_TREE_SAMPLE = `# 寒假集训课纲
 ### 参考书目
 ### 作业节点`;
 
+export function getDisplayWidth(str: string): number {
+  return [...str].reduce((acc, ch) => acc + (isFullwidthChar(ch) ? 2 : 1), 0);
+}
+
 function isFullwidthChar(ch: string): boolean {
   const cp = ch.codePointAt(0);
   if (cp === undefined) return false;
@@ -33,10 +51,6 @@ function isFullwidthChar(ch: string): boolean {
     (0x4e00 <= cp && cp <= 0x9fff) ||
     SPECIAL_FULLWIDTH_CHARS.includes(ch)
   );
-}
-
-function getStringLength(str: string): number {
-  return [...str].reduce((acc, ch) => acc + (isFullwidthChar(ch) ? 2 : 1), 0);
 }
 
 function getFullwidthCount(str: string): number {
@@ -78,12 +92,85 @@ function packLeadingSpaces(line: string): string {
   return `${IDEOGRAPHIC_SPACE.repeat(Math.floor(i / 2))}${" ".repeat(i % 2)}${line.slice(i)}`;
 }
 
-export function convertToTableText(inputText: string, charMark = "#"): string {
-  if (!inputText.trim()) return "";
+function evenWidth(width: number): number {
+  return width % 2 === 1 ? width + 1 : width;
+}
 
+function padOddDisplayWidth(text: string): string {
+  if (text === "│" || text === "┤") return text;
+  return getDisplayWidth(text) % 2 === 1 ? `${text} ` : text;
+}
+
+function padToDisplayWidth(text: string, width: number): string {
+  if (text === "│" || text === "┤") return text;
+  let out = text;
+  let current = getDisplayWidth(out);
+  while (current + 2 <= width) {
+    out += "─";
+    current += 2;
+  }
+  if (current < width) {
+    out += " ";
+    current += 1;
+  }
+  return out;
+}
+
+function normalizeOutline(inputText: string, mark: string): { lines: OutlineLine[]; warnings: string[] } {
+  const warnings: string[] = [];
+  const raw: OutlineLine[] = [];
+  let unmarked = 0;
+  let clamped = 0;
+
+  for (const line of inputText.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    let depth = countLeadingMarks(line, mark);
+    if (depth === 0) {
+      depth = 1;
+      unmarked += 1;
+    }
+    if (depth > MAX_DEPTH) {
+      depth = MAX_DEPTH;
+      clamped += 1;
+    }
+    raw.push({ depth, label: stripLeadingMarks(line, mark) });
+  }
+
+  const lines: OutlineLine[] = [];
+  let previous = 0;
+  let filled = 0;
+  for (const item of raw) {
+    const start = previous === 0 ? 1 : previous + 1;
+    for (let depth = start; depth < item.depth; depth += 1) {
+      lines.push({ depth, label: "" });
+      filled += 1;
+    }
+    lines.push(item);
+    previous = item.depth;
+  }
+
+  if (filled) warnings.push(`已补齐 ${filled} 处跳级，按连续层级生成。`);
+  if (unmarked) warnings.push(`有 ${unmarked} 行没有标记，已按第 1 层处理。`);
+  if (clamped) warnings.push(`有 ${clamped} 行超过 ${MAX_DEPTH} 层，已截到第 ${MAX_DEPTH} 层。`);
+  return { lines, warnings };
+}
+
+function wrapHtml(text: string): string {
+  if (!text) return "";
+  return escapeHtml(text).replace(BOX_CHAR_PATTERN, '<span class="tab-symbol">$1</span>');
+}
+
+export function convertTree(
+  inputText: string,
+  charMark = "#",
+  options: ConvertTreeOptions = {},
+): ConvertTreeResult {
+  if (!inputText.trim()) return { text: "", html: "", warnings: [] };
+
+  const layout = options.layout ?? "compact";
   const mark = charMark.charAt(0) || "#";
-  const lines = inputText.split(/\r?\n/).filter((line) => line.trim());
-  const tree = Array<number>(50).fill(0);
+  const { lines, warnings } = normalizeOutline(inputText, mark);
+  const tree = Array<number>(MAX_DEPTH + 2).fill(0);
   let treeCursor = 0;
   const nodes: TreeNode[] = [];
   const current: TreeNode = [0, 0, "", []];
@@ -100,7 +187,7 @@ export function convertToTableText(inputText: string, charMark = "#"): string {
 
   function sumAncestorWidths(node: TreeNode | []): number {
     if (!node.length) return 0;
-    return getStringLength(node[2]) + sumAncestorWidths(getFather(node));
+    return getDisplayWidth(node[2]) + sumAncestorWidths(getFather(node));
   }
 
   function sameFather(a: TreeNode, b: TreeNode): boolean {
@@ -145,9 +232,9 @@ export function convertToTableText(inputText: string, charMark = "#"): string {
 
   for (const line of lines) {
     const previousDepth = depth;
-    depth = countLeadingMarks(line, mark);
+    depth = line.depth;
     const depthDelta = depth - previousDepth;
-    current[2] = stripLeadingMarks(line, mark);
+    current[2] = line.label;
     if (depthDelta <= 0) row += 1;
     current[0] = row;
     current[1] = depth;
@@ -182,26 +269,54 @@ export function convertToTableText(inputText: string, charMark = "#"): string {
     }
   }
 
+  for (const node of nodes) node[2] = padOddDisplayWidth(node[2]);
+
+  const columnWidths = Array<number>(maxDepth + 1).fill(0);
+  for (const node of nodes) {
+    columnWidths[node[1]] = Math.max(columnWidths[node[1]], getDisplayWidth(node[2]));
+  }
+  for (let d = 1; d <= maxDepth; d += 1) columnWidths[d] = evenWidth(columnWidths[d]);
+
+  function wideAncestorWidth(depthValue: number): number {
+    let width = 0;
+    for (let d = 1; d < depthValue; d += 1) width += columnWidths[d];
+    return width;
+  }
+
   const rows: string[] = [];
   for (let i = 1; i <= maxRow; i += 1) {
     const cells: string[] = [];
     for (let j = 1; j <= maxDepth; j += 1) {
       const matches = nodes.filter((node) => node[0] === i && node[1] === j);
       if (!matches.length) continue;
-      let start = sumAncestorWidths(getFather(matches[0])) - getFullwidthCount(cells.join(""));
+      const rawText = matches[0][2];
+      const text = layout === "wide" ? padToDisplayWidth(rawText, columnWidths[j]) : rawText;
+      const startDisplay =
+        layout === "wide" ? wideAncestorWidth(j) : sumAncestorWidths(getFather(matches[0]));
+      let start = startDisplay - getFullwidthCount(cells.join(""));
       if (start < 0) start = 0;
-      const text = matches[0][2];
       while (cells.length < start + text.length) cells.push(" ");
       for (let k = 0; k < text.length; k += 1) cells[start + k] = text[k];
     }
     rows.push(packLeadingSpaces(cells.join("").replace(/\s+$/, "")));
   }
 
-  return rows.join("\n");
+  const text = rows.join("\n");
+  return { text, html: wrapHtml(text), warnings };
 }
 
-export function convertToTableHtml(inputText: string, charMark = "#"): string {
-  const text = convertToTableText(inputText, charMark);
-  if (!text) return "";
-  return escapeHtml(text).replace(BOX_CHAR_PATTERN, '<span class="tab-symbol">$1</span>');
+export function convertToTableText(
+  inputText: string,
+  charMark = "#",
+  options: ConvertTreeOptions = {},
+): string {
+  return convertTree(inputText, charMark, options).text;
+}
+
+export function convertToTableHtml(
+  inputText: string,
+  charMark = "#",
+  options: ConvertTreeOptions = {},
+): string {
+  return convertTree(inputText, charMark, options).html;
 }
