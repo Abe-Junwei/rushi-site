@@ -2,169 +2,169 @@
 import DownloadCards from "../components/DownloadCards.astro";
 import ProductPreview from "../components/ProductPreview.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { guideSteps, productUseCases, version } from "../data";
+import { guideSteps, productFaq, productUseCases, version } from "../data";
 
 const capabilities = [
   {
-    eyebrow: "Core capability",
+    number: "01",
     title: "本机转写",
-    body: "内置 FunASR 本机模型，首启 seed 后可断网转写；在线 STT 作为可选 Provider。Windows 可另下 CUDA 侧车加速。",
-    visual: "local",
+    body: "内置 FunASR 本机模型。模型就绪后可断网转写；需要在线服务时，再按需配置 STT Provider。",
+    detail: "录音与项目默认留在你的电脑上。",
+    href: "/docs/features/local-asr",
+    link: "了解本机转写",
   },
   {
-    eyebrow: "Workflow",
+    number: "02",
     title: "波形校对",
-    body: "编辑器将波形、播放头和语段列表放在同一工作区。支持拆分、合并、冻结与精修；变速播放尽量保持音高。",
-    visual: "waveform",
+    body: "把波形、播放头和语段放在同一工作区。边听边定位，按需要拆分、合并和精修。",
+    detail: "听到哪里，文字就校到哪里。",
+    href: "/docs/features/waveform-review",
+    link: "了解波形校对",
   },
   {
-    eyebrow: "Output",
+    number: "03",
     title: "交付导出",
-    body: "导出 TXT、SRT、DOCX；定稿模式可做规则纠错、智能改稿与大模型润色，场次元信息可进入文档抬头。",
-    visual: "export",
+    body: "从语段到成稿，按用途导出 TXT、SRT 或 DOCX。场次信息可随文档一起交付。",
+    detail: "一份录音，整理成可用的文字。",
+    href: "/docs/getting-started",
+    link: "查看完整流程",
   },
 ] as const;
 
-const heroHighlights = [
-  {
-    label: "本机转写",
-    detail: "FunASR 本机模型，可断网识别；在线 STT 按需接入。",
-  },
-  {
-    label: "波形校对",
-    detail: "波形、播放头与语段同屏，支持拆分、合并与冻结。",
-  },
-  {
-    label: "智能改稿",
-    detail: "定稿模式里规则纠错、智能改稿与大模型润色，差异以修订轨呈现。",
-  },
-  {
-    label: "术语记忆",
-    detail: "术语表偏置识别正形；稳定手改沉淀为纠错记忆，越用越准。",
-  },
-  {
-    label: "本地交付",
-    detail: "导出 TXT、SRT、DOCX；项目数据留在本机，无云端账号墙。",
-  },
-  {
-    label: "项目管理",
-    detail: "欢迎页管项目与文件，编辑器专注单条校对；场次元信息可进文档抬头。",
-  },
-] as const;
+const changeModules = import.meta.glob("../../changes/*.md", { eager: true });
+const recentChanges = (Object.values(changeModules) as Array<{ frontmatter: Record<string, string> }>)
+  .sort((a, b) => String(b.frontmatter.date).localeCompare(String(a.frontmatter.date)))
+  .slice(0, 3);
 ---
 
 <BaseLayout>
   <section class="home-hero">
     <div class="home-hero-copy">
-      <h1>
-        <span class="home-brand">如是我闻</span>
-        <span class="home-headline">本地录音转写与校对智能平台</span>
-      </h1>
-      <ul class="home-highlights">
-        {
-          heroHighlights.map((item) => (
-            <li>
-              <strong>{item.label}</strong>
-              <p>{item.detail}</p>
-            </li>
-          ))
-        }
-      </ul>
+      <span class="eyebrow">如是我闻 · Rushi</span>
+      <h1>让每一段录音<br />成为可交付的文字</h1>
+      <p>本机转写、波形校对、智能改稿与文稿导出，在一个桌面工作区里完成。</p>
       <div class="home-actions">
-        <a class="button primary" href="#download">获取应用</a>
-        <a class="button secondary" href="/features">查看功能</a>
+        <a class="button primary" href="#download">下载桌面版 <span aria-hidden="true">↗</span></a>
+        <a class="button secondary" href="/features">了解功能 <span aria-hidden="true">↗</span></a>
       </div>
     </div>
-    <div class="home-hero-visual">
-      <ProductPreview />
+    <ProductPreview />
+  </section>
+
+  <section class="trust-band" aria-label="产品原则">
+    <span class="eyebrow">从录音到文稿</span>
+    <p>为中文长音频而做。<strong>项目数据默认保存在本机</strong>，在线转写由你按需开启。</p>
+    <a href="/docs/getting-started">看看如何开始 <span aria-hidden="true">↗</span></a>
+  </section>
+
+  <section class="home-statement">
+    <div class="home-statement-inner">
+      <span class="eyebrow">一个连贯的工作区</span>
+      <h2>听、看、改、交付，<br />不必在工具之间来回切换。</h2>
+      <p>从项目里的原始音频出发，在时间轴上找到每一句话，逐步整理成可复用的文字材料。</p>
     </div>
   </section>
 
-  <section class="trust-band">
-    <p>录音与转写默认在你的电脑上完成。需要在线 STT 时，你也可以按 Provider 单独配置凭证。</p>
-  </section>
-
-  <section class="capability-stack" id="features" aria-label="核心能力">
-    {
-      capabilities.map((item, index) => (
-        <article class:list={["capability-row", index % 2 === 1 && "is-reversed"]}>
-          <div class="capability-copy">
-            <span class="capability-eyebrow">{item.eyebrow}</span>
-            <h2>{item.title}</h2>
-            <p>{item.body}</p>
-          </div>
-          <div class:list={["capability-visual", `is-${item.visual}`]} aria-hidden="true">
-            {item.visual === "local" && (
-              <div class="capability-local">
-                <span>本机推理</span>
-                <strong>Local ASR Ready</strong>
-              </div>
-            )}
-            {item.visual === "waveform" && (
-              <div class="capability-wave-panel">
-                <span></span>
-                <span></span>
-                <div class="capability-wave-active"></div>
-              </div>
-            )}
-            {item.visual === "export" && (
-              <div class="capability-files">
-                <span>TXT</span>
-                <span>SRT</span>
-                <span>DOCX</span>
-              </div>
-            )}
-          </div>
-        </article>
-      ))
-    }
+  <section class="capability-stack" id="features" aria-labelledby="capability-heading">
+    <div class="home-section-heading">
+      <span class="eyebrow">核心能力</span>
+      <h2 id="capability-heading">把漫长的整理过程，<br />放进清晰的步骤里。</h2>
+    </div>
+    {capabilities.map((item) => (
+      <article class="capability-row">
+        <div class="capability-copy">
+          <span class="capability-eyebrow">{item.number} / 03</span>
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+          <a href={item.href}>{item.link} <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="capability-visual">
+          {item.number === "02" ? (
+            <img src="/rushi-editor-demo.png" alt="真实编辑器中的波形和校对语段" width="2560" height="1600" loading="lazy" />
+          ) : (
+            <div class="capability-typographic">
+              <span>{item.number === "01" ? "LOCAL TRANSCRIPTION" : "READY TO DELIVER"}</span>
+              <strong>{item.detail}</strong>
+              {item.number === "03" && <small>TXT&nbsp;&nbsp;/&nbsp;&nbsp;SRT&nbsp;&nbsp;/&nbsp;&nbsp;DOCX</small>}
+            </div>
+          )}
+        </div>
+      </article>
+    ))}
   </section>
 
   <section class="scene-workflow">
     <div class="scene-workflow-grid">
       <div>
-        <h2>适合这些整理场景</h2>
+        <span class="eyebrow">适用场景</span>
+        <h2>不止一种录音，<br />也不止一种成稿。</h2>
         <ul class="scene-list">
-          {
-            productUseCases.map((item, index) => (
-              <li>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.description}</p>
-                </div>
-              </li>
-            ))
-          }
+          {productUseCases.map((item, index) => (
+            <li>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h3>{item.title}</h3><p>{item.description}</p></div>
+            </li>
+          ))}
         </ul>
       </div>
       <div>
-        <h2>四步完成一份可校对的转写稿</h2>
+        <span class="eyebrow">使用流程</span>
+        <h2>四步，从音频<br />走到可以交付。</h2>
         <ol class="workflow-list">
-          {
-            guideSteps.map((item, index) => (
-              <li class:list={[index === 2 && "is-current"]}>
-                <span>{item.step}</span>
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.body}</p>
-                </div>
-              </li>
-            ))
-          }
+          {guideSteps.map((item) => (
+            <li>
+              <span>{item.step}</span>
+              <div><h3>{item.title}</h3><p>{item.body}</p></div>
+            </li>
+          ))}
         </ol>
+      </div>
+    </div>
+  </section>
+
+  {recentChanges.length > 0 && (
+    <section class="home-releases">
+      <div class="home-section-heading">
+        <span class="eyebrow">最近更新</span>
+        <h2>产品持续打磨。</h2>
+        <a href="/changelog">查看全部更新 <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="home-release-list">
+        {recentChanges.map((change) => (
+          <a href="/changelog">
+            <time>{new Date(change.frontmatter.date).toISOString().slice(0, 10)}</time>
+            <strong>{change.frontmatter.title}</strong>
+            <span aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="home-faq" aria-labelledby="faq-heading">
+    <div class="home-faq-inner">
+      <div>
+        <span class="eyebrow">常见问题</span>
+        <h2 id="faq-heading">开始之前，<br />你可能想知道。</h2>
+      </div>
+      <div class="home-faq-list">
+        {productFaq.map((item) => (
+          <details>
+            <summary>{item.question}<span aria-hidden="true">＋</span></summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
       </div>
     </div>
   </section>
 
   <section class="home-download" id="download">
     <div class="home-download-heading">
-      <h2>下载如是我闻</h2>
-      <p>选择你的桌面平台。当前提供 macOS 与 Windows，暂无 Linux 桌面包。</p>
+      <span class="eyebrow">开始使用</span>
+      <h2>让下一份录音，<br />更快变成文稿。</h2>
+      <p>桌面版支持 macOS Apple Silicon 与 Windows x64。</p>
     </div>
     <DownloadCards />
-    <p class="home-download-note">
-      当前版本 v{version} · 发版于 updates.rushi.app · Windows 请完整解压后再安装 · 详见<a href="/download">下载页</a>
-    </p>
+    <p class="home-download-note">当前公开版本 v{version} · <a href="/download">查看安装说明与其他下载</a></p>
   </section>
 </BaseLayout>
