@@ -1,5 +1,6 @@
 ---
 import "../styles/site.css";
+import "../styles/home.css";
 
 interface Props {
   title?: string;
@@ -28,28 +29,43 @@ const {
   </head>
   <body>
     <header class="site-header">
-      <a class="brand-link" href="/">如是我闻</a>
+      <a class="brand-link" href="/" aria-label="如是我闻首页">
+        <img src="/rushi-lockup.png" alt="" width="32" height="32" />
+        <span>如是我闻</span>
+      </a>
       <nav class="main-nav" aria-label="主导航">
         <a href="/features">功能</a>
         <a href="/docs/getting-started">使用说明</a>
         <a href="/changelog">更新记录</a>
         <a href="/download">下载</a>
       </nav>
-      <a class="header-cta" href="/download">获取应用</a>
+      <a class="header-cta" href="/download">获取应用 <span aria-hidden="true">↗</span></a>
     </header>
     <main>
       <slot />
     </main>
     <footer class="site-footer">
-      <div>
+      <div class="footer-brand">
         <strong>如是我闻</strong>
-        <span>本地中文课录音转写与校对</span>
+        <span>让每一段录音成为可交付的文字。</span>
       </div>
       <div class="footer-links">
-        <a href="/download">下载</a>
-        <a href="/docs/getting-started">使用说明</a>
-        <a href="/changelog">更新记录</a>
-        <a href="/tree">义脉树枝图生成器</a>
+        <div>
+          <strong>产品</strong>
+          <a href="/features">功能介绍</a>
+          <a href="/download">下载应用</a>
+          <a href="/changelog">更新记录</a>
+        </div>
+        <div>
+          <strong>帮助</strong>
+          <a href="/docs/getting-started">使用说明</a>
+          <a href="/docs/features/local-asr">本机转写</a>
+          <a href="/docs/features/waveform-review">波形校对</a>
+        </div>
+        <div>
+          <strong>更多</strong>
+          <a href="/tree">义脉树枝图生成器</a>
+        </div>
       </div>
       <p>Copyright © 沂南灵创技术服务中心。当前无 Linux 桌面包。</p>
     </footer>

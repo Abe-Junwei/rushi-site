@@ -10,12 +10,15 @@ import { productFeatures } from "../data";
     <p>Rushi 把项目管理、本机转写、波形校对、智能改稿和交付导出放进同一个桌面应用。</p>
   </section>
   <section class="section-block">
-    <div class="feature-grid wide">
-      {productFeatures.map((feature) => (
-        <article class="feature-card">
-          <h3>{feature.name}</h3>
-          <p>{feature.shortDescription}</p>
-          <a href={feature.docsPath}>查看说明</a>
+    <div class="feature-list">
+      {productFeatures.map((feature, index) => (
+        <article>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <h2>{feature.name}</h2>
+          <div>
+            <p>{feature.shortDescription}</p>
+            <a href={feature.docsPath}>查看说明 ↗</a>
+          </div>
         </article>
       ))}
     </div>

@@ -1,37 +1,11 @@
----
-const bars = Array.from({ length: 48 }, (_, index) => 22 + ((index * 17) % 62));
----
-
-<div class="editor-mock" aria-label="如是我闻编辑器界面示意">
-  <div class="editor-mock-bar">
-    <div class="editor-mock-dots" aria-hidden="true">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <span class="editor-mock-file">lecture_01_raw_audio.wav</span>
-    <span class="editor-mock-spacer" aria-hidden="true"></span>
-  </div>
-
-  <div class="editor-mock-wave">
-    <div class="editor-mock-playhead" aria-hidden="true"></div>
-    <div class="editor-mock-bars" aria-hidden="true">
-      {bars.map((height) => <span style={`height: ${height}%`}></span>)}
-    </div>
-  </div>
-
-  <div class="editor-mock-segments">
-    <article class="editor-segment">
-      <time>00:01:23</time>
-      <p>同学们好，我们今天这节课主要讲一下中国古代文学批评史里的几个核心概念。</p>
-    </article>
-    <article class="editor-segment is-active">
-      <time>00:01:45</time>
-      <p>特别是“意象”这个词，它不仅仅是一个文学术语，更涉及到一种独特的哲学认知方式。</p>
-    </article>
-    <article class="editor-segment is-dim">
-      <time>00:02:10</time>
-      <p>大家可以翻开教材的第三十四页，看那段关于《文心雕龙》的引述。</p>
-    </article>
-  </div>
-</div>
+<figure class="product-preview">
+  <img
+    src="/rushi-editor-demo.png"
+    alt="如是我闻真实编辑器截图：演示项目中，波形与三条校对语段在同一工作区"
+    width="2560"
+    height="1600"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <figcaption>真实应用界面 · 仓库测试音频与演示字幕</figcaption>
+</figure>
